@@ -1,4 +1,4 @@
-function Get-GithubOrgTeamsAndPermissions {
+function Get-GitHubOrgTeamsAndPermissions {
     [CmdletBinding()]
     param(
         [string]$GitHubOrg,
