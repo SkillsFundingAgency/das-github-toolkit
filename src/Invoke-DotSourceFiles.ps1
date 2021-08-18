@@ -35,15 +35,15 @@ foreach($Class in $Classes) {
             $MissingClassName = $MissingClass -replace '(Unable to find type \[)(.*)(\])', '$2'
             $MissingClassFile = Get-Item -Path "$($Class.Directory)\$($MissingClassName).ps1"
             try {
-    
+
                 . $MissingClassFile.FullName
                 . $Class.FullName
-        
+
             }
             catch {
-    
+
                 Write-Warning "Failed to load class $($Class.FullName)"
-    
+
             }
 
         }

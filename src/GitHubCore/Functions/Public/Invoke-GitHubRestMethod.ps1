@@ -146,23 +146,19 @@ function Invoke-GitHubRestMethod {
     }
 
     try {
-
         $Response = Invoke-RestMethod @Params -ResponseHeadersVariable ResponseHeaders -Verbose:$VerbosePreference
-    
     }
     catch {
-
         $Response = $_.ErrorDetails.Message
-    
     }
-    
+
     # check for rate limiting
     if ($ResponseHeaders) {
         $WaitParams =@{
             Api = $ResponseHeaders["X-RateLimit-Resource"][0]
             Limit = ([int]$ResponseHeaders["X-RateLimit-Limit"][0])
             Remaining = ([int]$ResponseHeaders["X-RateLimit-Remaining"][0])
-            Reset = ([int]$ResponseHeaders["X-RateLimit-Reset"][0]) 
+            Reset = ([int]$ResponseHeaders["X-RateLimit-Reset"][0])
         }
         Wait-GitHubRateLimit @WaitParams
     }
@@ -170,8 +166,8 @@ function Invoke-GitHubRestMethod {
         Write-Error "No response headers"
         Write-Warning "Response: $Response"
     }
-    
-    # check for pagination 
+
+    # check for pagination
     if ($null -ne $ResponseHeaders.Link) {
 
         Write-Verbose "Response contains multiple pages"
@@ -193,7 +189,7 @@ function Invoke-GitHubRestMethod {
             }
             catch [Exception] {
                 Write-Error $_.Exception.Message
-                throw 
+                throw
             }
 
             if ($PageResponse.GetType().ToString() -eq "System.Object[]") {
@@ -208,7 +204,7 @@ function Invoke-GitHubRestMethod {
                     Api = $ResponseHeaders["X-RateLimit-Resource"][0]
                     Limit = ([int]$ResponseHeaders["X-RateLimit-Limit"][0])
                     Remaining = ([int]$ResponseHeaders["X-RateLimit-Remaining"][0])
-                    Reset = ([int]$ResponseHeaders["X-RateLimit-Reset"][0]) 
+                    Reset = ([int]$ResponseHeaders["X-RateLimit-Reset"][0])
                 }
                 Wait-GitHubRateLimit @WaitParams
             }
@@ -216,11 +212,11 @@ function Invoke-GitHubRestMethod {
                 Write-Error "No response headers, waiting 60 seconds"
                 Start-Sleep -Seconds 60
             }
-        
+
         }
 
     }
-    
+
     Write-Output $Response
 
 }

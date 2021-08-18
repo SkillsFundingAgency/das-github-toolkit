@@ -10,7 +10,7 @@
 .PARAMETER Organization
     Optional.  The GitHub organisation that contains the repo, if not specified defaults to SkillsFundingAgency
 .PARAMETER RepoName
-    Required.  The name of the repo 
+    Required.  The name of the repo
 .EXAMPLE
     Remove-GitHubRepohooks -Username AGitHubUser -ApiToken abc123dfe456hij789 -RepoName AGitHubRepo
 .INPUTS
@@ -31,20 +31,20 @@ function Remove-GitHubRepoWebhooks {
         [Parameter(Mandatory=$true, Position=0)]
         [ValidateNotNullOrEmpty()]
         [String]$Username,
-    
+
         [Parameter(Mandatory=$true, Position=1)]
         [ValidateNotNullOrEmpty()]
         [String]$APIKey,
-    
+
         [Parameter(Mandatory=$false, Position=2)]
         [String]$Organization = "SkillsFundingAgency",
-    
+
         [Parameter(Mandatory=$true, Position=3)]
         [ValidateNotNullOrEmpty()]
         [string]$RepoName
 
     )
-    
+
     Write-Verbose -Message "Starting GitHub session for user $Username"
     Set-GitHubSessionInformation -Username $Username -APIKey $ApiKey
 
@@ -52,7 +52,7 @@ function Remove-GitHubRepoWebhooks {
     $Repo = Invoke-GitHubRestMethod -Method GET -Uri $Uri
 
     if ($Repo.name -eq $RepoName) {
-        
+
         Write-Verbose -Message "Getting webhooks for $($Repo.name)"
         $Uri = "/repos/$Organization/$($Repo.name)/hooks"
         $Hooks = Invoke-GitHubRestMethod -Method GET -Uri $Uri

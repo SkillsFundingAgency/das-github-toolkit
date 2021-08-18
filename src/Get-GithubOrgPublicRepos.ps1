@@ -18,7 +18,7 @@ do {
     $Parameters['per_page'] = "100"
     $Request = [System.UriBuilder]$Uri
     $Request.Query = $Parameters.ToString()
-    
+
     $RepoRequest = Invoke-WebRequest -Uri $Request.Uri -Headers @{ Authorization = "Basic $Base64AuthInfo" }
 
     $Repos.AddRange(($RepoRequest.Content | ConvertFrom-Json -Depth 99))

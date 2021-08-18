@@ -6,11 +6,11 @@ function Get-GitHubLicenceInfo {
     )
     $Baseurl = "https://api.github.com/graphql"
     $SessionInfo = Get-GitHubSessionInformation
-    
+
     $HasNextPage = $true
     $PageInfo = ""
     $Licences = @()
-    
+
     while ($HasNextPage) {
         $BranchQuery = @"
 {

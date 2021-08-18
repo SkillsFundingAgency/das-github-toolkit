@@ -5,11 +5,11 @@ function Get-GitHubRepos {
     )
     $Baseurl = "https://api.github.com/graphql"
     $SessionInfo = Get-GitHubSessionInformation
-    
+
     $HasNextPage = $true
     $PageInfo = ""
     $Repositories = @()
-    
+
     while ($HasNextPage) {
         $BranchQuery = @"
 {

@@ -59,7 +59,7 @@ function Search-DotNetFrameworks {
 
         Remove-Variable -Name Matches -ErrorAction SilentlyContinue
         Remove-Variable -Name Version -ErrorAction SilentlyContinue
-        $Pattern = "<TargetFramework\w*>(.*)</TargetFramework\w*>"       
+        $Pattern = "<TargetFramework\w*>(.*)</TargetFramework\w*>"
         $null = $FileContent -match $Pattern
         if ($Matches) {
             $MatchResult = $Matches[1]

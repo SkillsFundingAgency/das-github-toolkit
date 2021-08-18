@@ -4,7 +4,7 @@
     A PowerShell function for auditing the webhooks in use on a GitHub organisation's repos
 
     .DESCRIPTION
-    A PowerShell function for auditing the webhooks in use on a GitHub organisation's repos.  
+    A PowerShell function for auditing the webhooks in use on a GitHub organisation's repos.
     Utilises the GitHub API v3
 
     .PARAMETER Username
@@ -61,7 +61,7 @@
             $item | Add-Member -MemberType NoteProperty -Name ContentType -Value $hook.config.content_type
             $item | Add-Member -MemberType NoteProperty -Name ConfigUrl -Value $hook.config.url
             $report += $item
-        
+
         }
 
     }

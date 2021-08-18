@@ -52,24 +52,24 @@ function Set-GitHubSessionInformation {
             if ($PSCmdlet.ShouldProcess("GithubSessionInformation")){
 
                 $EncodedAuth = [System.Text.Encoding]::UTF8.GetBytes("$($Username):$($APIKey)")
-    
+
                 $Script:GithubSessionInformation = [PSCustomObject]@{
-    
+
                     Username = $Username
                     Authorization = [System.Convert]::ToBase64String($EncodedAuth)
                     Headers = @{
                         "Accept" = "application/vnd.github.v3+json"
                         "Authorization" = "Basic [System.Convert]::ToBase64String($EncodedAuth)"
                     }
-    
+
                 }
-    
+
             }
 
         }
         elseif ($PSCmdlet.ParameterSetName -eq "PatToken") {
             $Script:GithubSessionInformation = [PSCustomObject]@{
-    
+
                 Headers = @{
                     "Accept" = "application/vnd.github.v3+json"
                     "Authorization" = "Bearer $PatToken"

@@ -48,7 +48,7 @@ function Search-DotNetPackages {
         }
 
         Remove-Variable -Name Matches -ErrorAction SilentlyContinue
-        $Pattern = "<PackageReference Include=`"$PackageName`" Version=`"(.*)`" />"        
+        $Pattern = "<PackageReference Include=`"$PackageName`" Version=`"(.*)`" />"
         if(!($FileContent -match $Pattern)) {
             $Pattern = "<HintPath>\.\.\\packages\\$PackageName\.([\d\.]*)"
             if(!($FileContent -match $Pattern)) {

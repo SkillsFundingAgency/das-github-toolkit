@@ -30,5 +30,3 @@ stages:
 - stage: Test
   jobs:
   - template: pipeline-templates/job/code-test.yml
-
-    

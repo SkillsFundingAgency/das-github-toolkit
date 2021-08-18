@@ -14,10 +14,10 @@ function New-GitHubRepository {
 
     .PARAMETER Organization
     Optional.  The GitHub organisation that contains the repo, if not specified defaults to SkillsFundingAgency
-    
+
     .PARAMETER RepoName
     Required. The name of the repository.
-            
+
     .PARAMETER Description
     Optional. A short description of the repository.
 
@@ -38,7 +38,7 @@ function New-GitHubRepository {
     Use the NoWiki switch to create a repo without a Wiki, by default repositories are created with a Wiki.
 
     .PARAMETER Licence
-    Optional.  Specify a licence using the licence keyword, by default the MIT licence is used.  
+    Optional.  Specify a licence using the licence keyword, by default the MIT licence is used.
     Other license keywords can be found at https://help.github.com/articles/licensing-a-repository/#searching-github-by-license-type
 
     .INPUTS
@@ -130,13 +130,13 @@ Param (
 
     ##TO DO: refactor relevant GitHubReleaseModule functions into a GitHubCore module.  Ensure that the session info can be used in modules calling GitHubCore
     ##TO DO: replace URI with /orgs/SkillsFundingAgency/repos after testing
-    
+
     $Result = Invoke-GitHubRestMethod -Method POST -URI "/user/repos"  -Body ($RepoSettings | ConvertTo-Json)
 
     if($WithoutStandardConfig.IsPresent -and $Result.name -eq $RepoName) {
         ##Slack Webhook
         ##TO DO: identify correct webhook to use
-        #New-GitHubRepoWebhook -Username $Username -APIKey $APIKey -RepoName $Repo.Name -WebhookUrl "https://hooks.slack.com/services/" -ContentType json -Events 
+        #New-GitHubRepoWebhook -Username $Username -APIKey $APIKey -RepoName $Repo.Name -WebhookUrl "https://hooks.slack.com/services/" -ContentType json -Events
     }
 
     return $Result

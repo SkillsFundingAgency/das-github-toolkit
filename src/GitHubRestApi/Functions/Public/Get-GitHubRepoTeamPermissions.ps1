@@ -6,7 +6,7 @@ function Get-GithubRepoTeamPermissions {
 
     $Repos = Invoke-GitHubRestMethod -Method GET -URI "/orgs/$GitHubOrg/repos"
     $RepoTeams = @()
-    
+
     foreach ($Repo in $Repos) {
         $Teams = Invoke-GitHubRestMethod -Method GET -URI "/repos/$GitHubOrg/$($Repo.name)/teams"
         $RepoTeams += @{

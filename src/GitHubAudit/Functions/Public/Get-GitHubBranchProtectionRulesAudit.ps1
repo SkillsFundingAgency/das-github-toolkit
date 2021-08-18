@@ -10,7 +10,7 @@ function Get-GitHubBranchProtectionRulesAudit {
     $PropertiesToCompare = (New-Object -TypeName GitHubRepoBranchProtection | Get-Member -MemberType Property).Name
     # Remove BranchName property.  In order to handle alternative names for the default branch (eg master, main) the NormalisedBranchName is used for comparison
     $PropertiesToCompare = $PropertiesToCompare | Where-Object { $_ -ne "BranchName" }
-    
+
     foreach ($BranchProtectedRepo in $BranchProtectedRepos) {
         $BranchProtectionRules = @()
         foreach ($BranchProtectionOutput in $BranchProtectedRepo.repoBranchProtectionRules) {
@@ -40,11 +40,11 @@ function Get-GitHubBranchProtectionRulesAudit {
             $CorrectConfiguration = $true
         }
 
-        $BranchProtectionAudit = New-Object -TypeName GitHubAuditResult -Property @{ 
-			ExpectedValue = $ExpectedBranchProtectionRules
-			ActualValue = $BranchProtectionRules
-			CorrectConfiguration = $CorrectConfiguration
-		}
+        $BranchProtectionAudit = New-Object -TypeName GitHubAuditResult -Property @{
+            ExpectedValue = $ExpectedBranchProtectionRules
+            ActualValue = $BranchProtectionRules
+            CorrectConfiguration = $CorrectConfiguration
+        }
 
         Remove-Variable -Name ExistingAuditResult -ErrorAction SilentlyContinue
         $ExistingAuditResult = $AuditResults | Where-Object { $_.RepositoryName -eq $BranchProtectedRepo.repoName }

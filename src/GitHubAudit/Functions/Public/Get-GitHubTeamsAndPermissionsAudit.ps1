@@ -1,14 +1,14 @@
 function Get-GitHubTeamsAndPermissionsAudit {
     [CmdletBinding()]
     param(
-		[GitHubRepoAudit[]]$AuditResults,
+        [GitHubRepoAudit[]]$AuditResults,
         [object]$Config
     )
-    
+
     $Repos = Get-GithubRepoTeamPermissions
 
     $PropertiesToCompare = (New-Object -TypeName GitHubRepoAccessControlItem | Get-Member -MemberType Property).Name
-    
+
     foreach ($Repo in $Repos) {
         $ActualAcl = @()
         foreach ($Team in $Repo.teams) {
@@ -34,11 +34,11 @@ function Get-GitHubTeamsAndPermissionsAudit {
             $CorrectConfiguration = $true
         }
 
-        $AclAudit = New-Object -TypeName GitHubAuditResult -Property @{ 
-			ExpectedValue = $ExpectedAcl
-			ActualValue = $ActualAcl
-			CorrectConfiguration = $CorrectConfiguration
-		}
+        $AclAudit = New-Object -TypeName GitHubAuditResult -Property @{
+            ExpectedValue = $ExpectedAcl
+            ActualValue = $ActualAcl
+            CorrectConfiguration = $CorrectConfiguration
+        }
 
         Remove-Variable -Name ExistingAuditResult -ErrorAction SilentlyContinue
         $ExistingAuditResult = $AuditResults | Where-Object { $_.RepositoryName -eq $Repo.repository.name }

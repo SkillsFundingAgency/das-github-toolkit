@@ -7,11 +7,11 @@ function Get-GithubRepoBranchProtectionRules{
 
     $Baseurl = "https://api.github.com/graphql"
     $SessionInfo = Get-GitHubSessionInformation
-    
+
     $HasNextPage = $true
     $PageInfo = ""
     $Rules = @()
-    
+
     while ($HasNextPage) {
         $BranchQuery = @"
 {
@@ -19,7 +19,7 @@ function Get-GithubRepoBranchProtectionRules{
 }
 "@
         $Response = Invoke-RestMethod -Method POST -Uri "$($Baseurl)" -Body $BranchQuery -Headers $SessionInfo.Headers
-    
+
         $HasNextPage = $Response.data.organization.repositories.pageInfo.hasNextPage -eq "True"
         $PageInfo = ", after:\""$($Response.data.organization.repositories.pageInfo.endCursor)\"""
         $Rules += $Response.data.organization.repositories.nodes

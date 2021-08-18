@@ -8,11 +8,12 @@ A PowerShell function for auditing GitHub configuration.  Utilises the GitHub RE
 .PARAMETER PatToken
 (optional) A PatToken can be passed directly to this cmdlet but it is preferable to use Set-GitHubSessionInformation
 A PAT token with the following permissions:
- notifications, public_repo, read:discussion, read:enterprise, read:org, read:packages, read:public_key, read:repo_hook, read:user, repo:invite, repo:status, repo_deployment, user:email
+notifications, public_repo, read:discussion, read:enterprise, read:org, read:packages, read:public_key, read:repo_hook, read:user, repo:invite, repo:status, repo_deployment, user:email
+
 To audit private repo config using the V3 REST API you will need 'repo', ie full control permissions over repos.  This is required to retrieve Team permissions for repositories.
 
 .PARAMETER PathToConfigFile
-(optional)  Path to a configuration file that defines the baseline configuration for a repo and the repositories to be audited.  
+(optional)  Path to a configuration file that defines the baseline configuration for a repo and the repositories to be audited.
 Defaults to the config file contained in the module: GitHubToolKit/GitHubAudit/config.json
 
 .PARAMETER StorageAccountName
@@ -43,7 +44,7 @@ function Get-GitHubAudit {
         [Parameter(Mandatory=$true, ParameterSetName = "BlobOutput")]
         [string]$StorageAccountKey
     )
-    
+
     $SessionInfo = Get-GitHubSessionInformation
     if (!$SessionInfo) {
         if ($PatToken) {
@@ -67,10 +68,10 @@ function Get-GitHubAudit {
 
     Write-Verbose "Starting Access Control Audit audit ..."
     $Audit = Get-GitHubTeamsAndPermissionsAudit -AuditResults $Audit -Config $Config
-    
+
     Write-Verbose "Starting Branch Protection audit ..."
     $Audit = Get-GitHubBranchProtectionRulesAudit -AuditResults $Audit -Config $Config
-    
+
     Write-Verbose "Starting Licence audit ..."
     $Audit = Get-GitHubLicencesAudit -AuditResults $Audit -Config $Config
 
@@ -106,7 +107,7 @@ function Get-GitHubAudit {
                 Write-Error "Error retrieving PropertyConfigValidityState for $($AuditedProperty.Name) on $($Repository.RepositoryName)"
                 $PropertyConfigValidityStates += $false
             }
-            
+
         }
         $Repository.CorrectConfiguration = $PropertyConfigValidityStates -contains $false -or $PropertyConfigValidityStates.Count -ne $AuditedProperties.Count ? $false : $true
     }
@@ -128,6 +129,6 @@ function Get-GitHubAudit {
         Set-AzStorageBlobContent -File $OutputFile.FullName -Container $ContainerName -Blob $OutputFileName -Context $StorageContext
         $OutputFile | Remove-Item
     }
-    
+
     $ResultsToReturn
 }
