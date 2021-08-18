@@ -24,7 +24,7 @@ jobs:
     displayName: Validate editorconfig
     workingDirectory: $(System.DefaultWorkingDirectory)
   - task: PowerShell@2
-    displayName: PowerShell: Invoke-Tests.ps1
+    displayName: 'PowerShell: Invoke-Tests.ps1'
     inputs:
       filePath: "tests/Invoke-Tests.ps1"
       pwsh: true
