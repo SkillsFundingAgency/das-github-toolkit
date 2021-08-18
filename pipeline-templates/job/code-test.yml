@@ -21,14 +21,15 @@ jobs:
   - script: |
       npm install eclint
       node $(npm root)/eclint/bin/eclint.js check $(System.DefaultWorkingDirectory)
-    displayName: "Validate editorconfig"
+    displayName: Validate editorconfig
     workingDirectory: $(System.DefaultWorkingDirectory)
   - task: PowerShell@2
+    displayName: PowerShell: Invoke-Tests.ps1
     inputs:
       filePath: "tests/Invoke-Tests.ps1"
       pwsh: true
   - task: PublishTestResults@2
-    displayName: "Publish Test Results **/TEST-*.xml"
+    displayName: Publish Test Results **/TEST-*.xml
     inputs:
       testResultsFormat: NUnit
       testResultsFiles: "**/TEST-*.xml"
