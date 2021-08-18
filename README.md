@@ -14,14 +14,31 @@ The DAS GitHub Toolkit PowerShell module provides cmdlets useful for scheduled a
 
 ## How It Works
 
-_Add a description of how the project works technically, this should give new developers an insight into the how the project hangs together, the core concepts in-use and the high-level features that it provides_
+### Project Structure
 
-_For Example_
-```
-The ServiceBus Utility is a combination of website and background processor that enumerates Azure Service Bus queues within a namespace using the error queue naming convention and presents them to the user as a selectable list, allowing messages on a queue to be retrieved for investigation. Once a queue has been selected the website will retrieve the messages from the error queue and place them into a CosmosDB under the exclusive possession of the logged in user. Once the messages have been moved into the CosmosDB the background processor will ensure that those messages are held for a maximum sliding time period of 24 hours. If messages are still present after this period expires the background processer will move them back to the error queue automatically so that they aren't held indefinitely.
+The [project module](./GitHubToolKit.psm1) file has 2 responsibilities, to load the cmdlets by dot sourcing them and to export those cmdlets as module members.  The former responsibility is offloaded to the [Invoke-DotSourceFiles](./Invoke-DotSourceFiles.ps1) cmdlet, all cmdlets and classes should be loaded via this cmdlet.  Maintaining this pattern ensures that the module is easy to maintain, extend and troubleshoot.
 
-Depending on the action performed by the user the messages will follow one of three paths. In the event that the user Aborts the process, the messages are moved back to the error queue they came from, if the user replays the messages they will be placed back onto the "processing queue" they were on prior to ending up in the error queue and will be removed from the CosmosDB. If the user deletes the messages then they will be removed from the CosmosDB and will be gone forever.
+The module is made up of collections of classes and public and private cmdlets (currently no private cmdlets have been implemented,  but it is anticipated that these may be requried in the future to maintain readability and to ensure that cmdlets that call the REST and GraphQL APIs are not directly exposed).  These classes and cmdlets are grouped in folders using the following structure:
+
 ```
+.
+|--GitHubAudit
+|  |--Classes
+|  |  |--GitHubAuditResult.ps1
+|  |--Functions
+|     |--Private
+|     |--Public
+|        |--Get-GitHubAudit.ps1
+|--GitHubCore
+|  |--Functions
+|     |--Public
+...
+```
+
+At the root of the projects are 3 folders containing special collections of functions plus a number of other folders that contain collections of cmdlets that provide related functionality.  The 3 special folders are:
+- GitHubCore: cmdlets that provide basic functionality that is shared across many cmdlets, eg `Invoke-GitHubRestMethod` and `Set-GitHubSessionInformation`
+- GitHubGraphQL: cmdlets for interacting with the GitHub v4 GraphQL API
+- GitHubRestApi: cmdlets for interacting with the GitHub v3 REST API
 
 ## 🚀 Installation
 
@@ -31,6 +48,16 @@ Depending on the action performed by the user the messages will follow one of th
 * A code editor that supports PowerShell
 * PowerShell Core
 * A GitHub account and a [PAT](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) token with the relevant permissions for the cmdlet(s) you're working on
+
+### Local Development
+
+To load the scripts in the VS Code PowerShell Integrated Console open GitHubToolKit\Invoke-DotSourceFiles.ps1 and debug it.  Rerunning this will load any changes to functions but may not load changes to classes.  If errors occur that relate to classes kill the PowerShell Integrated Console, if that doesn't fix the problem close all open PS sessions and VS Code and reopen them.
+
+After loading the scripts run Set-GitHubSessionInformation in the PowerShell Integrated Console.  To debug a function you will need to add a line after the function in the .ps1 file to call the function.
+
+If you have `powershell.debugging.createTemporaryIntegratedConsole` set to `true` this debugging approach will not work.
+
+To load the module in a PowerShell console run `Import-Module .\GitHubToolKit\GitHubToolKit.psm1 -Force`, force is required to ensure changes to functions are imported.
 
 ## 🔗 External Dependencies
 
