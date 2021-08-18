@@ -1,4 +1,4 @@
-function Get-GithubRepoBranchProtectionRules{
+function Get-GitHubRepoBranchProtectionRules{
     [CmdletBinding()]
     param(
         [string]$GitHubOrg,

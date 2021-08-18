@@ -1,4 +1,4 @@
-function Get-GithubVulnerabilities {
+function Get-GitHubVulnerabilities {
     [CmdletBinding()]
     param(
         [string]$GitHubOrg,
