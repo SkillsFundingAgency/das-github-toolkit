@@ -27,10 +27,8 @@ resources:
     endpoint: SkillsFundingAgency
 
 stages:
-- stage: Build
+- stage: Test
   jobs:
-  - template: pipeline-templates/job/code-build.yml
-    parameters:
-      SolutionBaseName: $(SolutionBaseName)
-      BuildConfiguration: $(BuildConfiguration)
+  - template: pipeline-templates/job/code-test.yml
+
     
