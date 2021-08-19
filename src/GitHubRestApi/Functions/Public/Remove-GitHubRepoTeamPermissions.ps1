@@ -31,7 +31,7 @@ https://docs.github.com/en/free-pro-team@latest/rest/reference/teams#remove-a-pr
 
 #>
 function Remove-GithubRepoTeamPermissions {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     Param(
         [Parameter(Mandatory = $true)]
         [String]$PatToken,
@@ -57,7 +57,9 @@ function Remove-GithubRepoTeamPermissions {
         Write-Warning "DryRun: Would be running DELETE $RequestUrl"
     } else {
         Write-Host "Removing Team $TeamSlug from $Repo"
-        $Response = Invoke-RestMethod -Method DELETE -Uri "$RequestUrl" -Headers $Headers
+        if($PSCmdlet.ShouldProcess($TeamSlug)) {
+            $Response = Invoke-RestMethod -Method DELETE -Uri "$RequestUrl" -Headers $Headers
+        }
     }
 
     return $Response
