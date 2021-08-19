@@ -24,7 +24,7 @@ function Get-GitHubBranchProtectionRulesAudit {
         [object]$Config
     )
 
-    $BranchProtectedRepos = Get-GithubRepoBranchProtectionRules -GithubOrg $Config.managedRepos.organisation -RepoSearchString $Config.managedRepos.pattern
+    $BranchProtectedRepos = Get-GithubRepoBranchProtectionRules -GithubOrg $Config.managedRepos.organisation
 
     $PropertiesToCompare = (New-Object -TypeName GitHubRepoBranchProtection | Get-Member -MemberType Property).Name
     # Remove BranchName property.  In order to handle alternative names for the default branch (eg master, main) the NormalisedBranchName is used for comparison

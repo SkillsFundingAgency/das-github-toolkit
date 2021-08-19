@@ -8,18 +8,14 @@ Retrieves the Branch Protection rules for a GitHub repo(s) and returns some of i
 .PARAMETER GitHubOrg
 The name of the GitHub organisation
 
-.PARAMETER RepoSearchString
-A search pattern for the repos to query
-
 .EXAMPLE
 Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
-Get-GitHubRepoBranchProtectionRules -GitHubOrg MyGitHubOrg -RepoSearchString MyRepo
+Get-GitHubRepoBranchProtectionRules -GitHubOrg MyGitHubOrg
 #>
 function Get-GitHubRepoBranchProtectionRules{
     [CmdletBinding()]
     param(
-        [string]$GitHubOrg,
-        [string]$RepoSearchString
+        [string]$GitHubOrg
     )
 
     $Baseurl = "https://api.github.com/graphql"
