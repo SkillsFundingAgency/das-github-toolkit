@@ -52,8 +52,9 @@ function New-GitHubRepository {
 
 #>
 ##TO DO: decide on OutputType
-[CmdletBinding(DefaultParameterSetName="Standard")][OutputType('System.Management.Automation.PSObject')]
-
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSReviewUnusedParameter", "Organization", Justification = "Parameter will be implemented in final version")]
+[CmdletBinding(DefaultParameterSetName="Standard", SupportsShouldProcess)]
+[OutputType('System.Management.Automation.PSObject')]
 Param (
 
     [Parameter(Mandatory=$true, Position=0)]
@@ -131,7 +132,9 @@ Param (
     ##TO DO: refactor relevant GitHubReleaseModule functions into a GitHubCore module.  Ensure that the session info can be used in modules calling GitHubCore
     ##TO DO: replace URI with /orgs/SkillsFundingAgency/repos after testing
 
-    $Result = Invoke-GitHubRestMethod -Method POST -URI "/user/repos"  -Body ($RepoSettings | ConvertTo-Json)
+    if($PSCmdlet.ShouldProcess($RepoName)) {
+        $Result = Invoke-GitHubRestMethod -Method POST -URI "/user/repos"  -Body ($RepoSettings | ConvertTo-Json)
+    }
 
     if($WithoutStandardConfig.IsPresent -and $Result.name -eq $RepoName) {
         ##Slack Webhook
