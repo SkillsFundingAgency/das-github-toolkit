@@ -34,7 +34,7 @@ https://docs.github.com/en/free-pro-team@latest/rest/reference/teams#add-or-upda
 
 #>
 function Set-GithubRepoTeamPermissions {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     Param(
         [Parameter(Mandatory = $true)]
         [String]$PatToken,
@@ -67,7 +67,9 @@ function Set-GithubRepoTeamPermissions {
         Write-Warning "DryRun: Would be running $RequestUrl with Permission $Permission"
     } else {
         Write-Host "Adding $TeamSlug as $Permission to $Repo"
-        $Response = Invoke-RestMethod -Method PUT -Uri "$RequestUrl" -Headers $Headers -Body ($Body | ConvertTo-Json)
+        if($PSCmdlet.ShouldProcess($TeamSlug)) {
+            $Response = Invoke-RestMethod -Method PUT -Uri "$RequestUrl" -Headers $Headers -Body ($Body | ConvertTo-Json)
+        }
     }
 
     return $Response
