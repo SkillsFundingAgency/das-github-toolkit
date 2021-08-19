@@ -24,7 +24,7 @@ function Get-GitHubLicencesAudit {
         [object]$Config
     )
 
-    $Licences = Get-GitHubLicenceInfo -GithubOrg $Config.managedRepos.organisation -RepoSearchString $Config.managedRepos.pattern
+    $Licences = Get-GitHubLicenceInfo -GithubOrg $Config.managedRepos.organisation
 
     Write-Verbose "Retrieved $($Licences.Count) licences."
     foreach ($Licence in $Licences) {
