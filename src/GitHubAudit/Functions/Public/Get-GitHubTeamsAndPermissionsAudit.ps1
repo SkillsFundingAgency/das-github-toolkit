@@ -12,7 +12,7 @@ An array of GitHubRepoAudit objects
 A GitHubAudit config file converted from json
 
 .EXAMPLE
-$Config = Get-Content -Path $PathToConfigFile -Raw | ConvertFrom-Json    
+$Config = Get-Content -Path $PathToConfigFile -Raw | ConvertFrom-Json
 $Audit = @()
 $Audit += New-Object -TypeName GitHubRepoAudit
 $Audit = Get-GitHubTeamsAndPermissionsAudit -AuditResults $Audit -Config $Config

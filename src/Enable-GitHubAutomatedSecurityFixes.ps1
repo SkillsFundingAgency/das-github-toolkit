@@ -13,7 +13,7 @@ GitHub username - possibly deprecated authentication method
 GitHub PAT token - possibly deprecated authentication method
 
 .PARAMETER OrgName
-The GitHub organisation to apply the changes to 
+The GitHub organisation to apply the changes to
 
 .PARAMETER RepoSearchString
 A prefix to match the repo names against
