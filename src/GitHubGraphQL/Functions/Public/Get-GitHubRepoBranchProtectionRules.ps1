@@ -1,3 +1,20 @@
+<#
+.SYNOPSIS
+Retrieves the Branch Protection rules for a GitHub repo(s) and returns some of it's properties
+
+.DESCRIPTION
+Retrieves the Branch Protection rules for a GitHub repo(s) and returns some of it's properties
+
+.PARAMETER GitHubOrg
+The name of the GitHub organisation
+
+.PARAMETER RepoSearchString
+A search pattern for the repos to query
+
+.EXAMPLE
+Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
+Get-GitHubRepoBranchProtectionRules -GitHubOrg MyGitHubOrg -RepoSearchString MyRepo
+#>
 function Get-GitHubRepoBranchProtectionRules{
     [CmdletBinding()]
     param(

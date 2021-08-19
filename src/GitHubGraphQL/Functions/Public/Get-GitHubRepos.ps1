@@ -1,3 +1,17 @@
+<#
+.SYNOPSIS
+Gets all the GitHub repos for a single GitHub organisation
+
+.DESCRIPTION
+Gets all the GitHub repos for a single GitHub organisation
+
+.PARAMETER GitHubOrg
+The name of the GitHub organisation
+
+.EXAMPLE
+Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
+Get-GitHubRepos -GitHubOrg MyGitHubOrg
+#>
 function Get-GitHubRepos {
     [CmdletBinding()]
     param(

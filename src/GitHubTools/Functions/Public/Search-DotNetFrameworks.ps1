@@ -8,6 +8,12 @@ Searches for csproj files across a GitHub organisation and parses the .NET versi
 .PARAMETER GitHubOrganisation
 The GitHub organisation to search
 
+.PARAMETER RepositoryPrefix
+(optional) Defaults to "das-*"
+
+.PARAMETER CsvOutputPath
+(optional) If CSV output is required specify a path to write it to
+
 .NOTES
 To search private repositories using the V3 REST API you will need 'repo', ie full control permissions over repos.
 

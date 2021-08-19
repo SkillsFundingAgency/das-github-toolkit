@@ -1,3 +1,13 @@
+<#
+.SYNOPSIS
+Dot sources all the class and function scripts used by a PowerShell module.
+
+.DESCRIPTION
+Dot sources all the class and function scripts used by a PowerShell module.  Can be called from within a .psm1 file or ran directly, eg when debugging in VS Code.
+
+.EXAMPLE
+.\Invoke-DotSourceFiles.ps1
+#>
 [CmdletBinding()]
 param()
 

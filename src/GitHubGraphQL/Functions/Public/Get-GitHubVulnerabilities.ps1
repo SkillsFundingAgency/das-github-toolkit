@@ -1,3 +1,20 @@
+<#
+.SYNOPSIS
+Returns GitHub repos that are reporting vulnerabilities from a single GitHub organisation
+
+.DESCRIPTION
+Returns GitHub repos matching a search pattern that are reporting vulnerabilities from a single GitHub organisation
+
+.PARAMETER GitHubOrg
+The name of the GitHub organisation
+
+.PARAMETER RepoSearchString
+A search pattern for the repos to query
+
+.EXAMPLE
+Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
+Get-GitHubVulnerabilities -GitHubOrg MyGitHubOrg -RepoSearchString MyRepo
+#>
 function Get-GitHubVulnerabilities {
     [CmdletBinding()]
     param(

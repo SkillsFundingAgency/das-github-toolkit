@@ -1,3 +1,22 @@
+<#
+.SYNOPSIS
+Appends repo Licence to the results of a GitHubAudit produced by Get-GitHubAudit
+
+.DESCRIPTION
+Appends repo Licence to the results of a GitHubAudit produced by Get-GitHubAudit
+
+.PARAMETER AuditResults
+An array of GitHubRepoAudit objects
+
+.PARAMETER Config
+A GitHubAudit config file converted from json
+
+.EXAMPLE
+$Config = Get-Content -Path $PathToConfigFile -Raw | ConvertFrom-Json    
+$Audit = @()
+$Audit += New-Object -TypeName GitHubRepoAudit
+$Audit = Get-GitHubLicencesAudit -AuditResults $Audit -Config $Config
+#>
 function Get-GitHubLicencesAudit {
     [CmdletBinding()]
     param(

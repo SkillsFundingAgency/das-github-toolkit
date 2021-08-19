@@ -5,6 +5,7 @@
 
 # Project specific files
 src/GitHubAudit/config.json
+TEST-*.xml
 
 # User-specific files
 *.rsuser

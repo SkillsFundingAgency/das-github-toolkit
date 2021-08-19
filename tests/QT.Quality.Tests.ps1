@@ -1,12 +1,19 @@
 $Scripts = Get-ChildItem -Path $PSScriptRoot/.. -File -Include "*.ps1", "*.psm1" -Exclude "*Tests.ps1" -Recurse | Where-Object { $_.FullName -inotmatch "[\\|\/]Classes[\\|\/]" }
 
-$ScriptsToExcludeFromDocumentationTests = @("Helpers.psm1")
+$ScriptsToExcludeFromDocumentationTests = @("Helpers.ps1", "GitHubToolKit.psm1")
 
 Describe "Script documentation tests" -Tags @("Quality") {
 
+    Import-Module $PSScriptRoot\..\src\GitHubToolKit.psm1 -Force
+
     foreach ($Script in $Scripts) {
         if ($Script.Name -notin $ScriptsToExcludeFromDocumentationTests) {
+            Remove-Variable Help -ErrorAction SilentlyContinue
+            # gets help from legacy scripts that do not export a function
             $Help = Get-Help $Script.FullName
+            if ($Help.GetType().Name -ne "PSCustomObject" -and $Help.Trim() -eq $Script.Name) {
+                $Help = Get-Help ($Script.Name -replace $Script.Extension, "")
+            }
 
             Context $Script.BaseName {
 

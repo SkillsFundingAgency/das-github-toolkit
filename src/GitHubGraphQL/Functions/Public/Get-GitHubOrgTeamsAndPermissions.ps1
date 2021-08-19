@@ -1,3 +1,20 @@
+<#
+.SYNOPSIS
+Gets the permissions by team that have been applied to a GitHub repo(s) in a single organisation
+
+.DESCRIPTION
+Retrieves the teams associated with a GitHub organisation and retrieves the permissions that team has on any repo(s) matching the RepoSearchString
+
+.PARAMETER GitHubOrg
+The name of the GitHub organisation
+
+.PARAMETER RepoSearchString
+A search pattern for the repos to query
+
+.EXAMPLE
+Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
+Get-GitHubOrgTeamsAndPermissions -GitHubOrg MyGitHubOrg -RepoSearchString MyRepo
+#>
 function Get-GitHubOrgTeamsAndPermissions {
     [CmdletBinding()]
     param(

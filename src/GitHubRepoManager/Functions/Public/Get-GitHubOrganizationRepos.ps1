@@ -1,3 +1,25 @@
+<#
+.SYNOPSIS
+Gets all the repos for a specified organisation and writes the output to a CSV file
+
+.DESCRIPTION
+Gets all the repos for a specified organisation and writes the output to a CSV file
+
+.PARAMETER Username
+GitHub username - possibly deprecated authentication method
+
+.PARAMETER APIKey
+GitHub API key - possibly deprecated authentication method
+
+.PARAMETER Organization
+(optional) GitHub organisation
+
+.PARAMETER OutputFolder
+(optional) folder to write the output file to
+
+.EXAMPLE
+Get-GitHubOrganizationRepos -Username MyUserName -APIKey 1234abcd
+#>
 function Get-GitHubOrganizationRepos {
     param(
 

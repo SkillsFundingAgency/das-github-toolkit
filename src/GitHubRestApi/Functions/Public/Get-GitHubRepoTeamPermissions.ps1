@@ -1,3 +1,17 @@
+<#
+.SYNOPSIS
+Gets a list of teams associated with each repo in a specified GitHub organisation
+
+.DESCRIPTION
+Gets a list of teams associated with each repo in a specified GitHub organisation
+
+.PARAMETER GitHubOrg
+(optional) The GitHub organsation to get repos from
+
+.EXAMPLE
+Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
+Get-GithubRepoTeamPermissions
+#>
 function Get-GithubRepoTeamPermissions {
     [CmdletBinding()]
     param(

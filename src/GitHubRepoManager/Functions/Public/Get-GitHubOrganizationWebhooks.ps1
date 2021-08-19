@@ -13,6 +13,15 @@
     .PARAMETER APIKey
     A PAT token with with full control over repos (to read private repos) and read:repo_hook
 
+    .PARAMETER Organization
+    (optional) The GitHub organisation to audit
+
+    .PARAMETER OutputFolder
+    (optional) The folder to write the CSV output to
+
+    .EXAMPLE
+    .\Get-GitHubOrganizationWebhooks.ps1 -UserName MyUserName -APIKey abcd1234
+
 #>
     [CmdletBinding()]
     param(

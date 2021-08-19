@@ -1,3 +1,20 @@
+<#
+.SYNOPSIS
+Retrieves the licences for all repos within a GitHub organisation
+
+.DESCRIPTION
+Retrieves the licences for all repos within a GitHub organisation
+
+.PARAMETER GitHubOrg
+The name of the GitHub organisation
+
+.PARAMETER RepoSearchString
+Not implemented
+
+.EXAMPLE
+Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
+Get-GitHubLicenceInfo -GitHubOrg MyGitHubOrganisation
+#>
 function Get-GitHubLicenceInfo {
     [CmdletBinding()]
     param(

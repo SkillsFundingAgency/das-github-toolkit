@@ -1,3 +1,19 @@
+<#
+.SYNOPSIS
+Gets public GitHub repos
+
+.DESCRIPTION
+Gets public GitHub repos
+
+.PARAMETER Base64AuthInfo
+Properly formatted authentication header
+
+.PARAMETER OrgName
+GitHub organisation
+
+.EXAMPLE
+.\Get-GitHubOrgPublicRepos.ps1 -Base64AuthInfo <PAT token> -OrgName MyGitHubOrg
+#>
 param(
     [Parameter(Mandatory = $true)]
     [string]$Base64AuthInfo,

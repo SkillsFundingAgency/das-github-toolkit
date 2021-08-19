@@ -1,3 +1,22 @@
+<#
+.SYNOPSIS
+Appends Branch Protection rules to the results of a GitHubAudit produced by Get-GitHubAudit
+
+.DESCRIPTION
+Appends Branch Protection rules to the results of a GitHubAudit produced by Get-GitHubAudit
+
+.PARAMETER AuditResults
+An array of GitHubRepoAudit objects
+
+.PARAMETER Config
+A GitHubAudit config file converted from json
+
+.EXAMPLE
+$Config = Get-Content -Path $PathToConfigFile -Raw | ConvertFrom-Json    
+$Audit = @()
+$Audit += New-Object -TypeName GitHubRepoAudit
+$Audit = Get-GitHubBranchProtectionRulesAudit -AuditResults $Audit -Config $Config
+#>
 function Get-GitHubBranchProtectionRulesAudit {
     [CmdletBinding()]
     param(
