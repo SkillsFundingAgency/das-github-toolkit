@@ -36,5 +36,5 @@ $SetRepos = $Repos | Where-Object { $_.name -like "$RepoSearchString*" -and !$_.
 
 foreach ($Repo in $SetRepos) {
     $Route = "/repos/$OrgName/$($Repo.name)/automated-security-fixes"
-    $Response = Invoke-WebRequest -Uri "$BaseUrl$Route" -Headers @{ Accept = "application/vnd.github.london-preview+json"; Authorization = "Basic $Base64AuthInfo" } -Method Put
+    $null = Invoke-WebRequest -Uri "$BaseUrl$Route" -Headers @{ Accept = "application/vnd.github.london-preview+json"; Authorization = "Basic $Base64AuthInfo" } -Method Put
 }
