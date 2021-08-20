@@ -21,6 +21,7 @@ A prefix to match the repo names against
 .EXAMPLE
 .\Enable-GitHubAutomatedSecurityFixes.ps1 -GithubUsername MyUserName -GithubPATToken abcd1234 -OrgName MyGitHubOrg -RepoSearchString "abc-"
 #>
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSReviewUnusedParameter", "RepoSearchString", Justification = "False positive as rule does not know that Where-Object operates within the same scope")]
 param(
     [string]$GithubUsername,
     [string]$GithubPATToken,

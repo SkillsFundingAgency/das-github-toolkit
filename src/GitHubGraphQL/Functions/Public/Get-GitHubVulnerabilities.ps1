@@ -16,6 +16,7 @@ Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
 Get-GitHubVulnerabilities -GitHubOrg MyGitHubOrg -RepoSearchString MyRepo
 #>
 function Get-GitHubVulnerabilities {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSReviewUnusedParameter", "RepoSearchString", Justification = "False positive as rule does not know that Where-Object operates within the same scope")]
     [CmdletBinding()]
     param(
         [string]$GitHubOrg,

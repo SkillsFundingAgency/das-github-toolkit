@@ -77,6 +77,7 @@ function Write-Log {
     Write-Log -LogLevel Error -Message "An error message"
 
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidOverwritingBuiltInCmdlets", "", Justification = "Planning to remove this function")]
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory = $true, Position = 0)]

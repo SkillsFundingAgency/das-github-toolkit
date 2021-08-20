@@ -22,6 +22,7 @@ Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
 Search-DotNetFrameworks -PackageName Microsoft.Extensions.Configuration -GitHubOrganisation MyOrganisation
 #>
 function Search-DotNetFrameworks {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSReviewUnusedParameter", "RepositoryPrefix", Justification = "False positive as rule does not know that Where-Object operates within the same scope")]
     [CmdletBinding()]
     param(
         [Parameter(Mandatory=$false)]
