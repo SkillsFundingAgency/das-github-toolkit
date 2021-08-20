@@ -48,7 +48,7 @@ function Get-GitHubOrganizationRepos {
     $repos = Invoke-GitHubRestMethod -Method GET -Uri $uri
     Write-Verbose -Message "Got $($repos.Length) repositories"
 
-    $report = $repos | Select-Object -Property name, has_issues, has_projects, has_wiki, private, @{Label="Licence"; Expression={$_.license.name}}, @{Label="has_desciption"; Expression={$_.description -ne $null}}, @{Label="has_homepage"; Expression={$_.homepage -ne $null}}
+    $report = $repos | Select-Object -Property name, has_issues, has_projects, has_wiki, private, @{Label="Licence"; Expression={$_.license.name}}, @{Label="has_desciption"; Expression={$null -ne $_.description}}, @{Label="has_homepage"; Expression={$null -ne $_.homepage}}
     Write-Verbose -Message "Output folder set to $OutputFolder"
     $FileName = "$OutputFolder\GitHubOrganizationRepos-$Organization-$([DateTime]::Now.ToString("yyyyMMdd-HHmm")).csv"
     try {
