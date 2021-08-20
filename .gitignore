@@ -7,6 +7,9 @@
 src/GitHubAudit/config.json
 TEST-*.xml
 
+#VS Code
+.vscode/
+
 # User-specific files
 *.rsuser
 *.suo
