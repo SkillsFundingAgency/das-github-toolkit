@@ -32,7 +32,8 @@ function Search-DotNetFrameworks {
         [String]$CsvOutputPath
     )
 
-    $Repos = Get-GitHubRepos -GitHubOrg $GitHubOrganisation | Where-Object { $_.name -match "^das-.+" -and $_.isArchived -eq $False }
+    $Repos = Get-GitHubRepos -GitHubOrg $GitHubOrganisation | Where-Object { $_.name -match "^$RepositoryPrefix.+" -and $_.isArchived -eq $False }
+    Write-Verbose "Searching $($Repos.Count) repos ..."
 
     $Files = @()
     $SearchResults = @()
