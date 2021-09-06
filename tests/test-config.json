@@ -1,0 +1,38 @@
+﻿{
+    "expectedBranchProtection": [
+        {
+            "BranchName" : "master",
+            "NormalisedBranchName": "master",
+            "StrictStatusChecks" : true,
+            "StatusChecks" : true,
+            "ApprovingReviews" : true,
+            "RequiredApprovingReviewCount" : 2
+        }
+    ],
+    "expectedLicence": "Foo License",
+    "expectedTeams": [
+        {
+            "TeamName" : "foo-developer",
+            "Permission": "push"
+        },
+        {
+            "TeamName" : "bar-admin",
+            "Permission": "admin"
+        }
+    ],
+    "managedRepos": {
+        "organisation": "FooBarAgency",
+        "includedPattern": "foo-",
+        "excludedPattern": "bar-foo*",
+        "includedRepos": [
+            "bar-foo-repo"
+        ],
+        "excludedRepos":[
+        ],
+        "includeArchivedRepos": false,
+        "includePrivateRepos": true,
+        "defaultBranchAlternativeNames": [
+            "main"
+        ]
+    }    
+}
