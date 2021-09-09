@@ -75,7 +75,7 @@ function Get-GitHubAudit {
     Write-Verbose "Starting Licence audit ..."
     $Audit = Get-GitHubLicencesAudit -AuditResults $Audit -Config $Config
 
-    $ResultsToReturn = $Audit
+    [array]$ResultsToReturn = $Audit
     Write-Verbose "Removing excluded repos"
     $ResultsToReturn = $ResultsToReturn | Where-Object { $_.RepositoryName -notmatch $Config.managedRepos.excludedPattern }
     $ResultsToReturn = $ResultsToReturn | Where-Object { $_.RepositoryName -notin $Config.managedRepos.excludedRepos }

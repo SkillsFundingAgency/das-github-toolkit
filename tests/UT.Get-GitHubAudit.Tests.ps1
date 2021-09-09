@@ -171,9 +171,11 @@ InModuleScope GitHubToolKit {
             )
         }
 
-        $Params = @{
-            PatToken = "not-a-real-pat-token"
-            PathToConfigFile = "$PSScriptRoot\test-config.json"
+        BeforeEach {
+            $Params = @{
+                PatToken = "not-a-real-pat-token"
+                PathToConfigFile = "$PSScriptRoot\test-config.json"
+            }
         }
 
         Context "GitHub API returns valid responses to all API calls and storage account details are not supplied" {
@@ -195,10 +197,10 @@ InModuleScope GitHubToolKit {
             Mock Write-Verbose
             Mock Set-AzStorageBlobContent
 
-            $Params["StorageAccountName"] = "notarealstorageaccount"
-            $Params["StorageAccountKey"] = "bm90LWEtcmVhbC1hY2NvdW50LWtleQ=="
-
             It "Returns an array of GitHubRepoAudit objects and writes a json file to blob storage" {
+                $Params["StorageAccountName"] = "notarealstorageaccount"
+                $Params["StorageAccountKey"] = "bm90LWEtcmVhbC1hY2NvdW50LWtleQ=="
+
                 $Result = Get-GitHubAudit @Params -Verbose
                 Assert-MockCalled -CommandName Get-GitHubTeamsAndPermIssionsAudit -ModuleName GitHubToolKit
                 Assert-MockCalled -CommandName Get-GitHubBranchProtectionRulesAudit -ModuleName GitHubToolKit
@@ -214,6 +216,124 @@ InModuleScope GitHubToolKit {
         Context "GitHub API returns valid responses to all API calls but config only selects one repo" {
             It "Returns an array of GitHubRepoAudit objects and writes a json file to blob storage" {
                 ##TO DO: identify why causes an error at line 96 if at line 94 only 1 repo is added to $ResultsToReturn
+                Mock -ModuleName GitHubToolKit Get-GitHubRepos -MockWith {
+                    return @(
+                        @{
+                            name = "foo-bar-repo"
+                            isArchived = $false
+                            isPrivate = $true
+                        },
+                        @{
+                            name = "bar-foo-repo"
+                            isArchived = $true
+                            isPrivate = $false
+                        }
+                    )
+                }
+                Mock -ModuleName GitHubToolKit Get-GitHubTeamsAndPermIssionsAudit -MockWith {
+                    ##TO DO: consider defining these objects in variables and appending extra properties to avoid duplication
+                    return @(
+                        @{
+                            RepositoryName = "foo-bar-repo"
+                            IsArchived = $false
+                            IsPrivateRepository = $true
+                            AccessControlLIst = @{
+                                ExpectedValue = New-Object -TypeName PSCustomObject
+                                ActualValue = New-Object -TypeName PSCustomObject
+                                CorrectConfiguration = $true
+                            }
+                        },
+                        @{
+                            RepositoryName = "bar-foo-repo"
+                            IsArchived = $true
+                            IsPrivateRepository = $false
+                            AccessControlLIst = @{
+                                ExpectedValue = New-Object -TypeName PSCustomObject
+                                ActualValue = New-Object -TypeName PSCustomObject
+                                CorrectConfiguration = $false
+                            }
+                        }
+                    )
+                } 
+                Mock -ModuleName GitHubToolKit Get-GitHubBranchProtectionRulesAudit -MockWith {
+                    return @(
+                        @{
+                            RepositoryName = "foo-bar-repo"
+                            IsArchived = $false
+                            IsPrivateRepository = $true
+                            AccessControlLIst = @{
+                                ExpectedValue = New-Object -TypeName PSCustomObject
+                                ActualValue = New-Object -TypeName PSCustomObject
+                                CorrectConfiguration = $true
+                            }
+                            BranchProtection =@{
+                                ExpectedValue = New-Object -TypeName PSCustomObject
+                                ActualValue = New-Object -TypeName PSCustomObject
+                                CorrectConfiguration = $false
+                            }
+                        },
+                        @{
+                            RepositoryName = "bar-foo-repo"
+                            IsArchived = $true
+                            IsPrivateRepository = $false
+                            AccessControlLIst = @{
+                                ExpectedValue = New-Object -TypeName PSCustomObject
+                                ActualValue = New-Object -TypeName PSCustomObject
+                                CorrectConfiguration = $false
+                            }
+                            BranchProtection =@{
+                                ExpectedValue = New-Object -TypeName PSCustomObject
+                                ActualValue = New-Object -TypeName PSCustomObject
+                                CorrectConfiguration = $true
+                            }
+                        }
+                    )
+                } 
+                Mock -ModuleName GitHubToolKit Get-GitHubLicencesAudit -MockWith {
+                    return @(
+                        @{
+                            RepositoryName = "foo-bar-repo"
+                            IsArchived = $false
+                            IsPrivateRepository = $true
+                            AccessControlLIst = @{
+                                ExpectedValue = New-Object -TypeName PSCustomObject
+                                ActualValue = New-Object -TypeName PSCustomObject
+                                CorrectConfiguration = $true
+                            }
+                            BranchProtection =@{
+                                ExpectedValue = New-Object -TypeName PSCustomObject
+                                ActualValue = New-Object -TypeName PSCustomObject
+                                CorrectConfiguration = $false
+                            }
+                            Licence = @{
+                                ExpectedValue = "Foo Licence"
+                                ActualValue = "Foo Licence"
+                                CorrectConfiguration = $true
+                            }
+                        },
+                        @{
+                            RepositoryName = "bar-foo-repo"
+                            IsArchived = $true
+                            IsPrivateRepository = $false
+                            AccessControlLIst = @{
+                                ExpectedValue = New-Object -TypeName PSCustomObject
+                                ActualValue = New-Object -TypeName PSCustomObject
+                                CorrectConfiguration = $false
+                            }
+                            BranchProtection =@{
+                                ExpectedValue = New-Object -TypeName PSCustomObject
+                                ActualValue = New-Object -TypeName PSCustomObject
+                                CorrectConfiguration = $true
+                            }
+                            Licence = @{
+                                ExpectedValue = "Foo Licence"
+                                ActualValue = "Bar Licence"
+                                CorrectConfiguration = $false
+                            }
+                        }
+                    )
+                }
+                $Result = Get-GitHubAudit @Params -Verbose
             }
         }
     
