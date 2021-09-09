@@ -6,6 +6,7 @@
 # Project specific files
 src/GitHubAudit/config.json
 TEST-*.xml
+GitHubAuditResults_*
 
 #VS Code
 .vscode/
