@@ -23,7 +23,6 @@ InModuleScope GitHubToolKit {
             )
         }
         Mock -ModuleName GitHubToolKit Get-GitHubTeamsAndPermIssionsAudit -MockWith {
-            ##TO DO: consider defining these objects in variables and appending extra properties to avoid duplication
             return @(
                 @{
                     RepositoryName = "foo-bar-repo"
@@ -215,7 +214,6 @@ InModuleScope GitHubToolKit {
     
         Context "GitHub API returns valid responses to all API calls but config only selects one repo" {
             It "Returns an array of GitHubRepoAudit objects and writes a json file to blob storage" {
-                ##TO DO: identify why causes an error at line 96 if at line 94 only 1 repo is added to $ResultsToReturn
                 Mock -ModuleName GitHubToolKit Get-GitHubRepos -MockWith {
                     return @(
                         @{
@@ -231,7 +229,6 @@ InModuleScope GitHubToolKit {
                     )
                 }
                 Mock -ModuleName GitHubToolKit Get-GitHubTeamsAndPermIssionsAudit -MockWith {
-                    ##TO DO: consider defining these objects in variables and appending extra properties to avoid duplication
                     return @(
                         @{
                             RepositoryName = "foo-bar-repo"
@@ -334,6 +331,7 @@ InModuleScope GitHubToolKit {
                     )
                 }
                 $Result = Get-GitHubAudit @Params -Verbose
+                , $Result | Should -BeOfType System.Array
             }
         }
     
