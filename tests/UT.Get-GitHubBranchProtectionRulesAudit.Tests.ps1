@@ -1,5 +1,4 @@
-﻿
-Import-Module $PSScriptRoot\..\src\GitHubToolKit.psm1 -Force
+﻿Import-Module $PSScriptRoot\..\src\GitHubToolKit.psm1 -Force
 
 Describe "Get-GitHubBranchProtectionRulesAudit tests" -Tags @("Unit") {
     Mock Get-GithubRepoBranchProtectionRules -ModuleName GitHubToolKit -MockWith {
@@ -31,14 +30,14 @@ Describe "Get-GitHubBranchProtectionRulesAudit tests" -Tags @("Unit") {
                         requiresApprovingReviews = $true
                         requiredApprovingReviewCount = 1
                     }
-                )                    
+                )
             }
         )
     }
 
     $PathToConfigFile = "$PSScriptRoot\test-config.json"
     $Config = Get-Content -Path $PathToConfigFile -Raw | ConvertFrom-Json
-    
+
     BeforeEach {
         $Params = @{
             AuditResults = @(

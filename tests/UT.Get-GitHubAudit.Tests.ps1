@@ -55,7 +55,7 @@ InModuleScope GitHubToolKit {
                     }
                 }
             )
-        } 
+        }
         Mock -ModuleName GitHubToolKit Get-GitHubBranchProtectionRulesAudit -MockWith {
             return @(
                 @{
@@ -104,7 +104,7 @@ InModuleScope GitHubToolKit {
                     }
                 }
             )
-        } 
+        }
         Mock -ModuleName GitHubToolKit Get-GitHubLicencesAudit -MockWith {
             return @(
                 @{
@@ -211,7 +211,7 @@ InModuleScope GitHubToolKit {
                 $Result.Count | Should -Be 3
             }
         }
-    
+
         Context "GitHub API returns valid responses to all API calls but config only selects one repo" {
             It "Returns an array of GitHubRepoAudit objects and writes a json file to blob storage" {
                 Mock -ModuleName GitHubToolKit Get-GitHubRepos -MockWith {
@@ -285,7 +285,7 @@ InModuleScope GitHubToolKit {
                             }
                         }
                     )
-                } 
+                }
                 Mock -ModuleName GitHubToolKit Get-GitHubLicencesAudit -MockWith {
                     return @(
                         @{
@@ -334,6 +334,5 @@ InModuleScope GitHubToolKit {
                 $Result.Count | Should -Be 2
             }
         }
-    
     }
 }
