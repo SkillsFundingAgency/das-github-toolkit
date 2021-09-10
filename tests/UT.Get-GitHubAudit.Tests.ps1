@@ -183,7 +183,7 @@ InModuleScope GitHubToolKit {
                 Assert-MockCalled -CommandName Get-GitHubTeamsAndPermIssionsAudit -ModuleName GitHubToolKit
                 Assert-MockCalled -CommandName Get-GitHubBranchProtectionRulesAudit -ModuleName GitHubToolKit
                 Assert-MockCalled -CommandName Get-GitHubLicencesAudit -ModuleName GitHubToolKit
-                , $Result | Should -BeOfType System.Array
+                $Result.Count | Should -Be 3
             }
         }
 
@@ -208,7 +208,7 @@ InModuleScope GitHubToolKit {
                 Assert-MockCalled -CommandName New-AzStorageContainer -Times 0
                 Assert-MockCalled -CommandName Set-AzStorageBlobContent
                 Assert-MockCalled -CommandName Write-Verbose -Times 1 -ParameterFilter { $Message -match "Uploading audit results to blob GitHubAuditResults_\d{8}-\d{4}.json in container github-audit-results of storage account notarealstorageaccount"}
-                , $Result | Should -BeOfType System.Array
+                $Result.Count | Should -Be 3
             }
         }
     
@@ -331,7 +331,7 @@ InModuleScope GitHubToolKit {
                     )
                 }
                 $Result = Get-GitHubAudit @Params -Verbose
-                , $Result | Should -BeOfType System.Array
+                $Result.Count | Should -Be 2
             }
         }
     
