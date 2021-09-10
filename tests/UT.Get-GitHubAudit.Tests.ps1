@@ -251,7 +251,7 @@ InModuleScope GitHubToolKit {
                             }
                         }
                     )
-                } 
+                }
                 Mock -ModuleName GitHubToolKit Get-GitHubBranchProtectionRulesAudit -MockWith {
                     return @(
                         @{
