@@ -24,12 +24,75 @@ Describe "Invoke-GitHubRestMethod tests" -Tags @("Unit") {
     Context "GitHub API responds with no pagination" {
         It "Should call Invoke-RestMethod once and return a response" {
             $Result = Invoke-GitHubRestMethod @Params
-            Assert-MockCalled -CommandName Invoke-RestMethod -ModuleName GitHubToolKit -Times 1
+            Assert-MockCalled -CommandName Invoke-RestMethod -ModuleName GitHubToolKit -Times 1 -Exactly
             $Result | Should -BeOfType Hashtable
         }
     }
 
+    Context "GitHub API response includes a pagination link" {
+        Mock Invoke-RestMethod -ModuleName GitHubToolKit -ParameterFilter { $Uri -and $Uri -match "q=foobar$"} -MockWith {
+            $Script:ResponseHeaders = @{
+                Link = @(
+                    '<https://api.github.com/search/code?q=foobar&page=2>; rel="next"',
+                    '<https://api.github.com/search/code?q=foobar&page=4>; rel="last"'
+                )
+                "X-RateLimit-Resource" = @("core")
+                "X-RateLimit-Limit" = @("60")
+                "X-RateLimit-Remaining" = @("59")
+                "X-RateLimit-Reset" = @("$(Get-Date -Date (Get-Date).AddMinutes(1) -UFormat %s)")
+            }
+            return [object[]]@(1, 2, 3)
+        }
+        Mock Invoke-RestMethod -ModuleName GitHubToolKit -ParameterFilter { $URI -and $URI -match "q=foobar&page=2$"} -MockWith {
+            $Script:ResponseHeaders = @{
+                Link = @(
+                    '<https://api.github.com/search/code?q=foobar&page=3>; rel="next"',
+                    '<https://api.github.com/search/code?q=foobar&page=4>; rel="last"'
+                )
+                "X-RateLimit-Resource" = @("core")
+                "X-RateLimit-Limit" = @("60")
+                "X-RateLimit-Remaining" = @("59")
+                "X-RateLimit-Reset" = @("$(Get-Date -Date (Get-Date).AddMinutes(1) -UFormat %s)")
+            }
+            return [object[]]@(4, 5, 6)
+        }
+        Mock Invoke-RestMethod -ModuleName GitHubToolKit -ParameterFilter { $URI -and $URI -match "q=foobar&page=3$"} -MockWith {
+            $Script:ResponseHeaders = @{
+                Link = @(
+                    '<https://api.github.com/search/code?q=foobar&page=4>; rel="next"',
+                    '<https://api.github.com/search/code?q=foobar&page=4>; rel="last"'
+                )
+                "X-RateLimit-Resource" = @("core")
+                "X-RateLimit-Limit" = @("60")
+                "X-RateLimit-Remaining" = @("59")
+                "X-RateLimit-Reset" = @("$(Get-Date -Date (Get-Date).AddMinutes(1) -UFormat %s)")
+            }
+            return [object[]]@(7, 8, 9)
+        }
+
+        Mock Invoke-RestMethod -ModuleName GitHubToolKit -ParameterFilter { $URI -and $URI -match "q=foobar&page=4$"} -MockWith {
+            $Script:ResponseHeaders = @{
+                Link = @(
+                    '<https://api.github.com/search/code?q=foobar&page=4>; rel="next"',
+                    '<https://api.github.com/search/code?q=foobar&page=4>; rel="last"'
+                )
+                "X-RateLimit-Resource" = @("core")
+                "X-RateLimit-Limit" = @("60")
+                "X-RateLimit-Remaining" = @("59")
+                "X-RateLimit-Reset" = @("$(Get-Date -Date (Get-Date).AddMinutes(1) -UFormat %s)")
+            }
+            return [object[]]@(10, 11, 12)
+        }
+
+        $Params["URI"] = "/search/code?q=foobar"
+        
+        It "Should call Invoke-RestMethod once per page and return an array combining all the items from each response" {
+            $Result = Invoke-GitHubRestMethod @Params
+            Assert-MockCalled -CommandName Invoke-RestMethod -ModuleName GitHubToolKit -Times 4 -Exactly
+            $Result.Count | Should -Be 12
+        }
+    }
+
     ##TO DO: test rate limit
-    ##TO DO: test pagination
     ##TO DO: test SessionInfo not set
 }
