@@ -13,6 +13,7 @@ Describe "Invoke-GitHubRestMethod tests" -Tags @("Unit") {
             FooKey = "BarValue"
         }
     }
+    Mock Start-Sleep -ModuleName GitHubToolKit
 
     $Params = @{
         Method = "GET"
@@ -93,6 +94,26 @@ Describe "Invoke-GitHubRestMethod tests" -Tags @("Unit") {
         }
     }
 
-    ##TO DO: test rate limit
+    Context "GitHub API responds with a remaining rate limit header less than 25% of the the limit" {
+        Mock Invoke-RestMethod -ModuleName GitHubToolKit -MockWith {
+            $Script:ResponseHeaders = @{
+                Link = $null
+                "X-RateLimit-Resource" = @("core")
+                "X-RateLimit-Limit" = @("60")
+                "X-RateLimit-Remaining" = @("14")
+                "X-RateLimit-Reset" = @("$(Get-Date -Date (Get-Date).AddMinutes(1) -UFormat %s)")
+            }
+            return @{
+                FooKey = "BarValue"
+            }
+        }
+        
+        It "Should call Start-Sleep until the reset period has passed" {
+            $Result = Invoke-GitHubRestMethod @Params
+            Assert-MockCalled -CommandName Invoke-RestMethod -ModuleName GitHubToolKit -Times 1 -Exactly
+            Assert-MockCalled -CommandName Start-Sleep -ModuleName GitHubToolKit -Times 1 -Exactly -ParameterFilter { $Seconds -gt 50 }
+            $Result | Should -BeOfType Hashtable  
+        }
+    }
     ##TO DO: test SessionInfo not set
 }
