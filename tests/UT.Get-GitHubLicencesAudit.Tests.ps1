@@ -17,7 +17,7 @@ Describe "Get-GitHubLicencesAudit tests" -Tags @("Unit") {
             }
         )
     }
-    
+
     $PathToConfigFile = "$PSScriptRoot\test-config.json"
     $Config = Get-Content -Path $PathToConfigFile -Raw | ConvertFrom-Json
 

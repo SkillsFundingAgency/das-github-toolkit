@@ -92,7 +92,7 @@ Describe "Invoke-GitHubRestMethod tests" -Tags @("Unit") {
         }
 
         $Params["URI"] = "/search/code?q=foobar"
-        
+
         It "Should call Invoke-RestMethod once per page and return an array combining all the items from each response" {
             $Result = Invoke-GitHubRestMethod @Params
             Assert-MockCalled -CommandName Invoke-RestMethod -ModuleName GitHubToolKit -Times 4 -Exactly
@@ -113,12 +113,12 @@ Describe "Invoke-GitHubRestMethod tests" -Tags @("Unit") {
                 FooKey = "BarValue"
             }
         }
-        
+
         It "Should call Start-Sleep until the reset period has passed" {
             $Result = Invoke-GitHubRestMethod @Params
             Assert-MockCalled -CommandName Invoke-RestMethod -ModuleName GitHubToolKit -Times 1 -Exactly
             Assert-MockCalled -CommandName Start-Sleep -ModuleName GitHubToolKit -Times 1 -Exactly -ParameterFilter { $Seconds -gt 50 }
-            $Result | Should -BeOfType Hashtable  
+            $Result | Should -BeOfType Hashtable
         }
     }
 }
