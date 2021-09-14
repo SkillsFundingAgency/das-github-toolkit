@@ -20,6 +20,12 @@ Describe "Invoke-GitHubRestMethod tests" -Tags @("Unit") {
         URI = "/not-a-real-resource"
     }
 
+    Context "SessionInformation is not set" {
+        It "Should throw an error" {
+            { Invoke-GitHubRestMethod @Params } | Should -Throw
+        }
+    }
+
     Set-GitHubSessionInformation -PatToken "not-a-real-pat-token"
 
     Context "GitHub API responds with no pagination" {
@@ -115,5 +121,4 @@ Describe "Invoke-GitHubRestMethod tests" -Tags @("Unit") {
             $Result | Should -BeOfType Hashtable  
         }
     }
-    ##TO DO: test SessionInfo not set
 }
