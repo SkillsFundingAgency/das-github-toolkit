@@ -7,6 +7,7 @@ Describe "Remove-GitHubSessionInformation tests" -Tags @("Unit") {
     Context "GitHubSessionInformation has not been set" {
         It "Should call Remove-Variable successfully" -Skip {
             Remove-GitHubSessionInformation
+            Assert-MockCalled -CommandName Remove-Variable -ModuleName GitHubToolKit
         }
     }
 
@@ -14,6 +15,7 @@ Describe "Remove-GitHubSessionInformation tests" -Tags @("Unit") {
         It "Should call Remove-Variable successfully" -Skip {
             Set-GitHubSessionInformation -PatToken "not-a-real-pat-token"
             Remove-GitHubSessionInformation
+            Assert-MockCalled -CommandName Remove-Variable -ModuleName GitHubToolKit
         }
     }
 }
