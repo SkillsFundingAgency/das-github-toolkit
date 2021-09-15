@@ -20,7 +20,7 @@ Describe "Get-GitHubLicenceInfo tests" -Tags @("Unit") {
         It "Should call Invoke-RestMethod once and return the name and licenseInfo.name properties for each repository" {
             Set-GitHubSessionInformation -PatToken "not-a-real-pat-token"
             $Result = Get-GitHubLicenceInfo -GitHubOrg FooOrganisation
-            Assert-MockCalled -CommandName Invoke-RestMethod -ModuleName GitHubToolKit
+            Assert-MockCalled -CommandName Invoke-RestMethod -ModuleName GitHubToolKit -Times 1 -Exactly
             $Result.Count | Should -Be 2
             $Result[0].repoName | Should -Be "foo-bar-repo"
             $Result[0].repoLicence | Should -BeNullOrEmpty
