@@ -36,6 +36,7 @@ Describe "Get-GitHubOrgTeamsAndPermissions tests" -Tags @("Unit") {
             $Result = Get-GitHubOrgTeamsAndPermissions -GitHubOrg FooOrganisation -RepoSearchString "foo-"
             $Result.Count | Should -Be 2
             { $Result | Select-Object -ExpandProperty teamRepos } | Should -Not -Throw
+            Assert-MockCalled -CommandName Invoke-RestMethod -ModuleName GitHubToolKit -Times 3 -Exactly
         }
     }
 }

@@ -31,6 +31,7 @@ Describe "Get-GitHubRepoBranchProtectionRules tests" -Tags @("Unit") {
             $Result = Get-GitHubRepoBranchProtectionRules -GitHubOrg SkillsFundingAgency
             $Result.Count | Should -Be 2
             { $Result | Select-Object -ExpandProperty repoBranchProtectionRules } | Should -Not -Throw
+            Assert-MockCalled -CommandName Invoke-RestMethod -ModuleName GitHubToolKit -Times 1 -Exactly
         }
     }
 }
