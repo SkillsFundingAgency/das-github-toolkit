@@ -20,7 +20,7 @@ Describe "Get-GitHubVulnerabilities tests" -Tags @("Unit") {
             $ReturnObject = New-Object -TypeName PSCustomObject -Property @{ data = $Data }
             return $ReturnObject
         }
-        
+
         It "Should call Invoke-RestMethod once and return an array of repositories with a child array of vulnerability alerts" {
             Set-GitHubSessionInformation -PatToken "not-a-real-pat-token"
             $Result = Get-GitHubVulnerabilities -GitHubOrg SkillsFundingAgency -RepoSearchString "foo-*"
