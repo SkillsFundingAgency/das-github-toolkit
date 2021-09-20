@@ -12,7 +12,7 @@ Describe "Get-GitHubRepoBranchProtectionRules tests" -Tags @("Unit") {
                 New-Object -TypeName PSCustomObject -Property @{ matchingRefs = $MatchingRefs; requiresStrictStatusChecks = $true; requiresStatusChecks = $true; requiresApprovingReviews = $true; requiredApprovingReviewCount = 2 }
             )
             $BranchProtectionRules = New-Object -TypeName PSCustomObject -Property @{ nodes = $RuleNodes }
-            
+
             $RepoNodes = @(
                 New-Object -TypeName PSCustomObject -Property @{ name = "foo-bar-repo"; branchProtectionRules = $BranchProtectionRules }
                 New-Object -TypeName PSCustomObject -Property @{ name = "foo-foo-repo"; branchProtectionRules = $BranchProtectionRules }

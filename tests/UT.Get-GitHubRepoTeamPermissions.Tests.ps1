@@ -28,7 +28,7 @@ Describe "Get-GithubRepoTeamPermissions tests" -Tags @("Unit") {
                 }
             )
         }
-        
+
         It "Should return an array of hashtables containing repo teams" {
             Set-GitHubSessionInformation -PatToken "not-a-real-pat-token"
             $Result = Get-GithubRepoTeamPermissions

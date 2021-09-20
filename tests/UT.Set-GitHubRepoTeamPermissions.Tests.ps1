@@ -2,7 +2,7 @@
 
 Describe "Set-GithubRepoTeamPermissions tests" -Tags @("Unit") {
     Mock Invoke-RestMethod -ModuleName GitHubToolKit
-    
+
     BeforeEach {
         $Params = @{
             PatToken = "not-a-real-pat-token"

@@ -15,7 +15,7 @@ Describe "Get-GitHubRepos tests" -Tags @("Unit") {
             $ReturnObject = New-Object -TypeName PSCustomObject -Property @{ data = $Data }
             return $ReturnObject
         }
-        
+
         It "Should call Invoke-RestMethod once and return an array of repositories and their basic properties" {
             Set-GitHubSessionInformation -PatToken "not-a-real-pat-token"
             $Result = Get-GitHubRepos -GitHubOrg SkillsFundingAgency

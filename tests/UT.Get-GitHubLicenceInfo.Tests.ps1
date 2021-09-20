@@ -16,7 +16,7 @@ Describe "Get-GitHubLicenceInfo tests" -Tags @("Unit") {
             $ReturnObject = New-Object -TypeName PSCustomObject -Property @{ data = $Data }
             return $ReturnObject
         }
-        
+
         It "Should call Invoke-RestMethod once and return the name and licenseInfo.name properties for each repository" {
             Set-GitHubSessionInformation -PatToken "not-a-real-pat-token"
             $Result = Get-GitHubLicenceInfo -GitHubOrg FooOrganisation
