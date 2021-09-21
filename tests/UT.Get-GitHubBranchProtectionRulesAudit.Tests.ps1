@@ -1,7 +1,7 @@
 ﻿Import-Module $PSScriptRoot\..\src\GitHubToolKit.psm1 -Force
 
 Describe "Get-GitHubBranchProtectionRulesAudit tests" -Tags @("Unit") {
-    Mock Get-GithubRepoBranchProtectionRules -ModuleName GitHubToolKit -MockWith {
+    Mock Get-GitHubRepoBranchProtectionRule -ModuleName GitHubToolKit -MockWith {
         return @(
             @{
                 repoName = "foo-bar-repo"
