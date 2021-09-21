@@ -58,7 +58,7 @@ Describe "Search-DotNetFrameworks tests" -Tags @("Unit") {
         It "Should return an array of GitHubDotNetFrameworkSearch objects" {
             $Result = Search-DotNetFrameworks @Params
             $Result.Count | Should -Be 4
-            $Result[0] | Should -BeOfType GitHubDotNetFrameworkSearch
+            $Result[0].GetType().Name | Should -Be "GitHubDotNetFrameworkSearch"
         }
     }
 }
