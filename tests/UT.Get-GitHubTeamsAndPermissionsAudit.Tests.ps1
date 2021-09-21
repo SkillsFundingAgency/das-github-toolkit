@@ -78,6 +78,7 @@ Describe "Get-GitHubTeamsAndPermissionsAudit tests" -Tags @("Unit") {
             InModuleScope GitHubToolKit {
                 $Result = Get-GitHubTeamsAndPermissionsAudit @Params
                 $Result.Count | Should -Be 3
+                $Result[0].GetType().Name | Should -Be "GitHubRepoAudit"
                 { $Result | Select-Object -ExpandProperty AccessControlList -ErrorAction Stop } | Should -Not -Throw
             }
         }

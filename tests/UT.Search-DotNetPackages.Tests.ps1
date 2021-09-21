@@ -35,7 +35,7 @@ Describe "Search-DotNetPackages tests" -Tags @("Unit") {
         It "Should return an array of GitHubPackageSearch" {
             $Result = Search-DotNetPackages @Params
             $Result.Count | Should -Be 2
-            $Result[0] | Should -BeOfType GitHubPackageSearch
+            $Result[0].GetType().Name | Should -Be "GitHubPackageSearch"
         }
     }
 }

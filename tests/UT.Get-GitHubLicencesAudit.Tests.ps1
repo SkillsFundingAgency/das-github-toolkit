@@ -49,6 +49,7 @@ Describe "Get-GitHubLicencesAudit tests" -Tags @("Unit") {
             InModuleScope GitHubToolKit {
                 $Result = Get-GitHubLicencesAudit @Params
                 $Result.Count | Should -Be 3
+                $Result[0].GetType().Name | Should -Be "GitHubRepoAudit"
                 { $Result | Select-Object -ExpandProperty Licence -ErrorAction Stop } | Should -Not -Throw
             }
         }

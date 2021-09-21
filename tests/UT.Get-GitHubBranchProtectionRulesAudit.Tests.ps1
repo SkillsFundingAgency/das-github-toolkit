@@ -66,6 +66,7 @@ Describe "Get-GitHubBranchProtectionRulesAudit tests" -Tags @("Unit") {
             InModuleScope GitHubToolKit {
                 $Result = Get-GitHubBranchProtectionRulesAudit @Params
                 $Result.Count | Should -Be 2
+                $Result[0].GetType().Name | Should -Be "GitHubRepoAudit"
                 { $Result | Select-Object -ExpandProperty BranchProtection -ErrorAction Stop } | Should -Not -Throw
             }
         }
