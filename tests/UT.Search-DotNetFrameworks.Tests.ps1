@@ -46,14 +46,14 @@ Describe "Search-DotNetFrameworks tests" -Tags @("Unit") {
         )
     }
 
+    Mock Invoke-GitHubRestMethod -ModuleName GitHubToolKit -ParameterFilter { $Uri -match "\/repos.*" } -MockWith {
+        return '<?xml version="1.0" encoding="utf-8"?><TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>'
+    }
+
     $Params = @{
         RepositoryPrefix = "foo-"
     }
 
-    Mock Invoke-GitHubRestMethod -ModuleName GitHubToolKit -ParameterFilter { $Uri -match "\/repos.*" } -MockWith {
-        return '<?xml version="1.0" encoding="utf-8"?><TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>'
-    }
-    
     Context "The GitHub API returns a valid response" {
         It "Should return an array of GitHubDotNetFrameworkSearch objects" {
             $Result = Search-DotNetFrameworks @Params
