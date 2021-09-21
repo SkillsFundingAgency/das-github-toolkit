@@ -1,6 +1,6 @@
 ﻿Import-Module $PSScriptRoot\..\src\GitHubToolKit.psm1 -Force
 
-Describe "Remove-GithubRepoTeamPermissions tests" -Tags @("Unit") {
+Describe "Set-GitHubRepoTeamPermission tests" -Tags @("Unit") {
     Mock Invoke-RestMethod -ModuleName GitHubToolKit
 
     BeforeEach {
@@ -8,6 +8,7 @@ Describe "Remove-GithubRepoTeamPermissions tests" -Tags @("Unit") {
             PatToken = "not-a-real-pat-token"
             GitHubOrg = "FooBarAgency"
             TeamSlug = "foo-contributor"
+            Permission = "read"
             Repo = "foo-bar-repo"
         }
     }
@@ -15,14 +16,14 @@ Describe "Remove-GithubRepoTeamPermissions tests" -Tags @("Unit") {
     Context "All mandatory parameters are passed in with DryRun set to false" {
         It "Should call Invoke-RestMethod" {
             $Params["DryRun"] = $false
-            $Result = Remove-GithubRepoTeamPermissions @Params
+            $Result = Set-GitHubRepoTeamPermission @Params
             Assert-MockCalled -CommandName Invoke-RestMethod -ModuleName GitHubToolKit -Times 1 -Exactly
         }
     }
 
     Context "All mandatory parameters are passed" {
         It "Should not call Invoke-RestMethod" {
-            $Result = Remove-GithubRepoTeamPermissions @Params
+            $Result = Set-GitHubRepoTeamPermission @Params
             Assert-MockCalled -CommandName Invoke-RestMethod -ModuleName GitHubToolKit -Times 0 -Exactly
         }
     }

@@ -10,9 +10,9 @@ The name of the GitHub organisation
 
 .EXAMPLE
 Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
-Get-GitHubRepos -GitHubOrg MyGitHubOrg
+Get-GitHubRepo -GitHubOrg MyGitHubOrg
 #>
-function Get-GitHubRepos {
+function Get-GitHubRepo {
     [CmdletBinding()]
     param(
         [string]$GitHubOrg

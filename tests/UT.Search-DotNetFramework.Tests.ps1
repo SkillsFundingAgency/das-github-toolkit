@@ -1,8 +1,8 @@
 ﻿Import-Module $PSScriptRoot\..\src\GitHubToolKit.psm1 -Force
 
-Describe "Search-DotNetFrameworks tests" -Tags @("Unit") {
+Describe "Search-DotNetFramework tests" -Tags @("Unit") {
 
-    Mock Get-GitHubRepos -ModuleName GitHubToolKit -MockWith {
+    Mock Get-GitHubRepo -ModuleName GitHubToolKit -MockWith {
         return @(
             @{
                 name = "foo-bar-repo"
@@ -56,7 +56,7 @@ Describe "Search-DotNetFrameworks tests" -Tags @("Unit") {
 
     Context "The GitHub API returns a valid response" {
         It "Should return an array of GitHubDotNetFrameworkSearch objects" {
-            $Result = Search-DotNetFrameworks @Params
+            $Result = Search-DotNetFramework @Params
             $Result.Count | Should -Be 4
             $Result[0].GetType().Name | Should -Be "GitHubDotNetFrameworkSearch"
         }

@@ -10,9 +10,9 @@ The name of the GitHub organisation
 
 .EXAMPLE
 Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
-Get-GitHubRepoBranchProtectionRules -GitHubOrg MyGitHubOrg
+Get-GitHubRepoBranchProtectionRule -GitHubOrg MyGitHubOrg
 #>
-function Get-GitHubRepoBranchProtectionRules{
+function Get-GitHubRepoBranchProtectionRule{
     [CmdletBinding()]
     param(
         [string]$GitHubOrg

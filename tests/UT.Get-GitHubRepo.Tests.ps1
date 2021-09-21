@@ -1,6 +1,6 @@
 ﻿Import-Module $PSScriptRoot\..\src\GitHubToolKit.psm1 -Force
 
-Describe "Get-GitHubRepos tests" -Tags @("Unit") {
+Describe "Get-GitHubRepo tests" -Tags @("Unit") {
 
     Context "The GitHub API returns a valid, single page response" {
         Mock Invoke-RestMethod -ModuleName GitHubToolKit -MockWith {
@@ -18,7 +18,7 @@ Describe "Get-GitHubRepos tests" -Tags @("Unit") {
 
         It "Should call Invoke-RestMethod once and return an array of repositories and their basic properties" {
             Set-GitHubSessionInformation -PatToken "not-a-real-pat-token"
-            $Result = Get-GitHubRepos -GitHubOrg SkillsFundingAgency
+            $Result = Get-GitHubRepo -GitHubOrg SkillsFundingAgency
             $Result.Count | Should -Be 2
             Assert-MockCalled -CommandName Invoke-RestMethod -ModuleName GitHubToolKit -Times 1 -Exactly
         }

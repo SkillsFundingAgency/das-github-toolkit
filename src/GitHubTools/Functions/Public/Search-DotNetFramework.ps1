@@ -19,9 +19,9 @@ To search private repositories using the V3 REST API you will need 'repo', ie fu
 
 .EXAMPLE
 Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
-Search-DotNetFrameworks -PackageName Microsoft.Extensions.Configuration -GitHubOrganisation MyOrganisation
+Search-DotNetFramework -PackageName Microsoft.Extensions.Configuration -GitHubOrganisation MyOrganisation
 #>
-function Search-DotNetFrameworks {
+function Search-DotNetFramework {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSReviewUnusedParameter", "RepositoryPrefix", Justification = "False positive as rule does not know that Where-Object operates within the same scope")]
     [CmdletBinding()]
     param(
@@ -33,7 +33,7 @@ function Search-DotNetFrameworks {
         [String]$CsvOutputPath
     )
 
-    $Repos = Get-GitHubRepos -GitHubOrg $GitHubOrganisation | Where-Object { $_.name -match "^$RepositoryPrefix.+" -and $_.isArchived -eq $False }
+    $Repos = Get-GitHubRepo -GitHubOrg $GitHubOrganisation | Where-Object { $_.name -match "^$RepositoryPrefix.+" -and $_.isArchived -eq $False }
     Write-Verbose "Searching $($Repos.Count) repos ..."
 
     $Files = @()

@@ -13,9 +13,9 @@ A search pattern for the repos to query
 
 .EXAMPLE
 Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
-Get-GitHubOrgTeamsAndPermissions -GitHubOrg MyGitHubOrg -RepoSearchString MyRepo
+Get-GitHubOrgRepoPermissionsByTeam -GitHubOrg MyGitHubOrg -RepoSearchString MyRepo
 #>
-function Get-GitHubOrgTeamsAndPermissions {
+function Get-GitHubOrgRepoPermissionsByTeam {
     [CmdletBinding()]
     param(
         [string]$GitHubOrg,

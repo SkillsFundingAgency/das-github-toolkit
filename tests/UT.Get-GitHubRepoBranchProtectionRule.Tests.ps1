@@ -1,6 +1,6 @@
 ﻿Import-Module $PSScriptRoot\..\src\GitHubToolKit.psm1 -Force
 
-Describe "Get-GitHubRepoBranchProtectionRules tests" -Tags @("Unit") {
+Describe "Get-GitHubRepoBranchProtectionRule tests" -Tags @("Unit") {
 
     Context "The GitHub API returns a valid, single page response" {
         Mock Invoke-RestMethod -ModuleName GitHubToolKit -MockWith {
@@ -28,7 +28,7 @@ Describe "Get-GitHubRepoBranchProtectionRules tests" -Tags @("Unit") {
 
         It "Should call Invoke-RestMethod once and return an array of teams with each team item having another array of branch protection rules" {
             Set-GitHubSessionInformation -PatToken "not-a-real-pat-token"
-            $Result = Get-GitHubRepoBranchProtectionRules -GitHubOrg SkillsFundingAgency
+            $Result = Get-GitHubRepoBranchProtectionRule -GitHubOrg SkillsFundingAgency
             $Result.Count | Should -Be 2
             { $Result | Select-Object -ExpandProperty repoBranchProtectionRules } | Should -Not -Throw
             Assert-MockCalled -CommandName Invoke-RestMethod -ModuleName GitHubToolKit -Times 1 -Exactly

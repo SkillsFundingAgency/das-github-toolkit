@@ -20,7 +20,7 @@
 .NOTES
     Uses https://developer.github.com/v3/repos/hooks/#delete-a-hook
 #>
-function Remove-GitHubRepoWebhooks {
+function Remove-GitHubRepoWebhook {
     [CmdletBinding(
         SupportsShouldProcess=$true,
         ConfirmImpact='High'

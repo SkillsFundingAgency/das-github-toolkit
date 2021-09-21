@@ -2,7 +2,7 @@
 
 Describe "Get-GitHubAudit tests" -Tags @("Unit") {
 
-    Mock -ModuleName GitHubToolKit Get-GitHubRepos -MockWith {
+    Mock -ModuleName GitHubToolKit Get-GitHubRepo -MockWith {
         return @(
             @{
                 name = "foo-bar-repo"
@@ -224,7 +224,7 @@ Describe "Get-GitHubAudit tests" -Tags @("Unit") {
 
     Context "GitHub API returns valid responses to all API calls but config only selects one repo" {
         It "Returns an array of GitHubRepoAudit objects and writes a json file to blob storage" {
-            Mock -ModuleName GitHubToolKit Get-GitHubRepos -MockWith {
+            Mock -ModuleName GitHubToolKit Get-GitHubRepo -MockWith {
                 return @(
                     @{
                         name = "foo-bar-repo"

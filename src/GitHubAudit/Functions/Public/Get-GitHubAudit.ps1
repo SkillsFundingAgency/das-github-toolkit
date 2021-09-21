@@ -61,7 +61,7 @@ function Get-GitHubAudit {
     $Audit = @()
 
     Write-Verbose "Getting repos ..."
-    $Repos = Get-GitHubRepos -GitHubOrg $Config.managedRepos.organisation
+    $Repos = Get-GitHubRepo -GitHubOrg $Config.managedRepos.organisation
     foreach ($Repo in $Repos) {
         $Audit += New-Object -TypeName GitHubRepoAudit -Property @{ RepositoryName = $Repo.name; IsArchived = $Repo.isArchived; IsPrivateRepository = $Repo.isPrivate }
     }

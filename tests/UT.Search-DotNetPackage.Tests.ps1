@@ -33,7 +33,7 @@ Describe "Search-DotNetPackages tests" -Tags @("Unit") {
 
     Context "The GitHub API returns a valid response" {
         It "Should return an array of GitHubPackageSearch" {
-            $Result = Search-DotNetPackages @Params
+            $Result = Search-DotNetPackage @Params
             $Result.Count | Should -Be 2
             $Result[0].GetType().Name | Should -Be "GitHubPackageSearch"
         }

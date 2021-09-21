@@ -18,9 +18,9 @@ GitHub API key - possibly deprecated authentication method
 (optional) folder to write the output file to
 
 .EXAMPLE
-Get-GitHubOrganizationRepos -Username MyUserName -APIKey 1234abcd
+Get-GitHubOrganizationRepo -Username MyUserName -APIKey 1234abcd
 #>
-function Get-GitHubOrganizationRepos {
+function Get-GitHubOrganizationRepo {
     param(
 
         [Parameter(Mandatory=$true, Position=0)]

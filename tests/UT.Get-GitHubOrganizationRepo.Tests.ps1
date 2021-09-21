@@ -1,6 +1,6 @@
 ﻿Import-Module $PSScriptRoot\..\src\GitHubToolKit.psm1 -Force
 
-Describe "Get-GitHubOrganizationWebhooks tests" -Tags @("Unit") {
+Describe "Get-GitHubOrganizationRepo tests" -Tags @("Unit") {
 
     Context "The GitHub API returns a valid response" {
         Mock Invoke-GitHubRestMethod
@@ -8,7 +8,6 @@ Describe "Get-GitHubOrganizationWebhooks tests" -Tags @("Unit") {
 
         #Skipped tests: uses deprecated method to authenticate with GitHub API that's hardcoded into the script
         It "Should output the results to a file" -Skip {
-
         }
     }
 }

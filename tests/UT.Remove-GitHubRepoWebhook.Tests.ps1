@@ -1,6 +1,6 @@
 ﻿Import-Module $PSScriptRoot\..\src\GitHubToolKit.psm1 -Force
 
-Describe "Remove-GitHubRepoWebhooks tests" -Tags @("Unit") {
+Describe "Remove-GitHubRepoWebhook tests" -Tags @("Unit") {
 
     Context "All mandatory parameters are passed in" {
         Mock Invoke-GitHubRestMethod

@@ -19,7 +19,7 @@ To search private repositories using the V3 REST API you will need 'repo', ie fu
 Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
 Search-DotNetPackages -PackageName Microsoft.Extensions.Configuration -GitHubOrganisation MyOrganisation
 #>
-function Search-DotNetPackages {
+function Search-DotNetPackage {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory=$true)]

@@ -23,14 +23,14 @@ Name of the repo to target
 Writes an output of the changes that would be made with no actual execution. No api calls are performed in this process.
 
 .EXAMPLE
-Remove-GitHubRepoTeamPermissions -PatToken $PatToken -GitHubOrg "SkillsFundingAgency" -TeamSlug "das-platform-engineering" -Repo das-tools-service -DryRun $false
+Remove-GitHubRepoTeamPermission -PatToken $PatToken -GitHubOrg "SkillsFundingAgency" -TeamSlug "das-platform-engineering" -Repo das-tools-service -DryRun $false
 
 .NOTES
 The documentation for the github endpoint used by this function can be found here:
 https://docs.github.com/en/free-pro-team@latest/rest/reference/teams#remove-a-project-from-a-team
 
 #>
-function Remove-GithubRepoTeamPermissions {
+function Remove-GitHubRepoTeamPermission {
     [CmdletBinding(SupportsShouldProcess)]
     Param(
         [Parameter(Mandatory = $true)]

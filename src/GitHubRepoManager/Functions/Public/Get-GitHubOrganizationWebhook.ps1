@@ -1,4 +1,4 @@
-﻿function Get-GitHubOrganizationWebhooks {
+﻿function Get-GitHubOrganizationWebhook {
 <#
     .SYNOPSIS
     A PowerShell function for auditing the webhooks in use on a GitHub organisation's repos
@@ -20,7 +20,7 @@
     (optional) The folder to write the CSV output to
 
     .EXAMPLE
-    .\Get-GitHubOrganizationWebhooks.ps1 -UserName MyUserName -APIKey abcd1234
+    .\Get-GitHubOrganizationWebhook.ps1 -UserName MyUserName -APIKey abcd1234
 
 #>
     [CmdletBinding()]
