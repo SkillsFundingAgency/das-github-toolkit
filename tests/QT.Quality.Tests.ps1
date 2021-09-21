@@ -1,4 +1,4 @@
-$Scripts = Get-ChildItem -Path $PSScriptRoot/.. -File -Include "*.ps1", "*.psm1" -Exclude "*Tests.ps1" -Recurse | Where-Object { $_.FullName -inotmatch "[\\|\/]Classes[\\|\/]" }
+$Scripts = Get-ChildItem -Path $PSScriptRoot/.. -File -Include "*.ps1" -Exclude "*Tests.ps1" -Recurse | Where-Object { $_.FullName -inotmatch "[\\|\/]Classes[\\|\/]" }
 
 $ScriptsToExcludeFromDocumentationTests = @("Helpers.ps1", "GitHubToolKit.psm1")
 
