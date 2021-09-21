@@ -10,9 +10,9 @@ Gets a list of teams associated with each repo in a specified GitHub organisatio
 
 .EXAMPLE
 Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
-Get-GithubRepoTeamPermissions
+Get-GitHubRepoTeamPermission
 #>
-function Get-GithubRepoTeamPermissions {
+function Get-GitHubRepoTeamPermission {
     [CmdletBinding()]
     param(
         [string]$GitHubOrg = "SkillsFundingAgency"

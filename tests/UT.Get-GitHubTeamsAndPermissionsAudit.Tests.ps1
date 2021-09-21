@@ -1,7 +1,7 @@
 ﻿Import-Module $PSScriptRoot\..\src\GitHubToolKit.psm1 -Force
 
 Describe "Get-GitHubTeamsAndPermissionsAudit tests" -Tags @("Unit") {
-    Mock Get-GithubRepoTeamPermissions -ModuleName GitHubToolKit -MockWith {
+    Mock Get-GitHubRepoTeamPermission -ModuleName GitHubToolKit -MockWith {
         return @(
             @{
                 repository = @{

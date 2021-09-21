@@ -1,6 +1,6 @@
 ﻿Import-Module $PSScriptRoot\..\src\GitHubToolKit.psm1 -Force
 
-Describe "Get-GithubRepoTeamPermissions tests" -Tags @("Unit") {
+Describe "Get-GitHubRepoTeamPermission tests" -Tags @("Unit") {
 
     Context "The GitHub API returns a valid response" {
         Mock Invoke-GitHubRestMethod -ModuleName GitHubToolKit -ParameterFilter { $Uri -match "\/orgs\/.*\/repos" } -MockWith {
@@ -31,7 +31,7 @@ Describe "Get-GithubRepoTeamPermissions tests" -Tags @("Unit") {
 
         It "Should return an array of hashtables containing repo teams" {
             Set-GitHubSessionInformation -PatToken "not-a-real-pat-token"
-            $Result = Get-GithubRepoTeamPermissions
+            $Result = Get-GitHubRepoTeamPermission
             $Result.Count | Should -Be 2
             { $Result | Select-Object -ExpandProperty teams | Should -Not -Throw }
         }

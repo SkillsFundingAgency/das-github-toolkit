@@ -24,7 +24,7 @@ function Get-GitHubTeamsAndPermissionsAudit {
         [object]$Config
     )
 
-    $Repos = Get-GithubRepoTeamPermissions
+    $Repos = Get-GitHubRepoTeamPermission
 
     $PropertiesToCompare = (New-Object -TypeName GitHubRepoAccessControlItem | Get-Member -MemberType Property).Name
 
