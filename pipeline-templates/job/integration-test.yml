@@ -1,0 +1,22 @@
+jobs:
+- job: IntegrationTestsLinux
+  displayName: "Integration Tests - Linux"
+  pool:
+    name: "DAS - Continuous Integration"
+    demands:
+      - agent.OS -equals Linux
+  workspace:
+    clean: all
+  steps:
+  - task: PowerShell@2
+    displayName: 'PowerShell: Invoke-IntegrationTests.ps1'
+    inputs:
+      filePath: "tests/Invoke-Tests.ps1"
+      arguments: '-TestType "Integration"'
+      pwsh: true
+  - task: PublishTestResults@2
+    displayName: Publish Test Results **/TEST-*.xml
+    inputs:
+      testResultsFormat: NUnit
+      testResultsFiles: "**/TEST-*.xml"
+    condition: succeededOrFailed()
