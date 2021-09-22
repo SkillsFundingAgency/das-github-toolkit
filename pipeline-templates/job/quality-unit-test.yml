@@ -1,5 +1,6 @@
 jobs:
-- job: "Linux_Test"
+- job: QualityAndUnitTestsLinux
+  displayName: "Quality & Unit Tests - Linux"
   pool:
     name: "DAS - Continuous Integration"
     demands:
