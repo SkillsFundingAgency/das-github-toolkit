@@ -10,6 +10,13 @@ jobs:
   steps:
   ##TO DO: remove this task
   - pwsh: Get-ChildItem ENV:* | Sort-Object Name | Format-Table -AutoSize
+  # note this can be replaced with a PesterContainer after upgrading to Pester v5.x - https://stackoverflow.com/a/65790776/7360635
+  - task: PowerShell@2
+    displayName: 'PowerShell: Set GitHubPatToken environment variable'
+    targetType: inline
+    script: |
+      Set-Location -Path Env:
+      Set-Item -Path GitHubPatToken -Value $(GitHubPatToken)
   - task: PowerShell@2
     displayName: 'PowerShell: Invoke-IntegrationTests.ps1'
     inputs:
