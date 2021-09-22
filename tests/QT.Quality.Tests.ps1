@@ -1,6 +1,6 @@
-$Scripts = Get-ChildItem -Path $PSScriptRoot/.. -File -Include "*.ps1" -Exclude "*Tests.ps1" -Recurse | Where-Object { $_.FullName -inotmatch "[\\|\/]Classes[\\|\/]" }
+$Scripts = Get-ChildItem -Path $PSScriptRoot/.. -File -Include "*.ps1" -Exclude "*Tests.ps1", "IT.Mocks.ps1" -Recurse | Where-Object { $_.FullName -inotmatch "[\\|\/]Classes[\\|\/]" }
 
-$ScriptsToExcludeFromDocumentationTests = @("Helpers.ps1", "GitHubToolKit.psm1")
+$ScriptsToExcludeFromDocumentationTests = @("GitHubToolKit.psm1", "Helpers.ps1")
 
 Describe "Script documentation tests" -Tags @("Quality") {
 
@@ -66,11 +66,32 @@ Describe "Should have a unit test file" -Tags @("Quality") {
 
     foreach ($Script in $Scripts) {
         $TestName = "$($Script.BaseName).Tests.ps1"
-        Context "$($Script.BaseName)" {
+        Context "$($Script.BaseName) script" {
             It "Should have an associated unit test called UTxxx.$TestName" {
                 $TestFile = Get-Item -Path "$PSScriptRoot/UT*$TestName" -ErrorAction SilentlyContinue
                 $TestFile | Should Not Be $null
             }
         }
+    }
+}
+
+Describe "Integration tests should have a common set of mocks" -Tags @("Quality") {
+    $TestScripts = Get-ChildItem -Path $PSScriptRoot -File -Exclude "IT.Mocks.ps1" -Recurse
+    foreach ($Script in $TestScripts) {
+        Remove-Variable -Name Matches -ErrorAction SilentlyContinue
+        $Content = Get-Content -Path $Script.FullName -Raw | Out-String
+        # match the Describe block(s) and subsequent line
+        $DescribeBlocks = $Content | Select-String '(?m)^Describe(.*)-Tags @\((.*)\) {[\r]?\n(.*)' -AllMatches
+        foreach ($DescribeBlock in $DescribeBlocks.Matches) {
+            if ($DescribeBlock.Groups["2"].Value -eq '"Integration"') {
+                Context "$($DescribeBlock.Groups["1"].Value) describe block of $($Script.BaseName)" {
+                    It "Should dot source IT.Mocks.ps1 on the line after the Describe block" {
+                        $DescribeBlock.Groups["3"].Value -match '\. \$PSScriptRoot\\IT\.Mocks\.ps1' | Should -BeTrue
+                    }
+                }
+            }
+        }
+
+
     }
 }
