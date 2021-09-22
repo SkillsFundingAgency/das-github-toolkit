@@ -22,7 +22,7 @@
 Param(
     [Parameter(Mandatory = $false)]
     [ValidateSet("All", "Integration", "Quality", "Unit")]
-    [String] $TestType
+    [String[]] $TestType
 )
 
 $TestParameters = @{
