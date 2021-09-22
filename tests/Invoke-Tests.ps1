@@ -21,8 +21,8 @@
 [CmdletBinding()]
 Param(
     [Parameter(Mandatory = $false)]
-    [ValidateSet("All", "Acceptance", "Quality", "Unit")]
-    [String] $TestType = "All"
+    [ValidateSet("All", "Integration", "Quality", "Unit")]
+    [String] $TestType
 )
 
 $TestParameters = @{
@@ -31,6 +31,7 @@ $TestParameters = @{
     Script       = "$PSScriptRoot"
     PassThru     = $true
 }
+
 if ($TestType -ne 'All') {
     $TestParameters['Tag'] = $TestType
 }

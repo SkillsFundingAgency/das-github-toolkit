@@ -28,6 +28,7 @@ jobs:
     displayName: 'PowerShell: Invoke-Tests.ps1'
     inputs:
       filePath: "tests/Invoke-Tests.ps1"
+      arguments: '-TestType "Quality", "Unit"'
       pwsh: true
   - task: PublishTestResults@2
     displayName: Publish Test Results **/TEST-*.xml
