@@ -27,6 +27,6 @@ resources:
     endpoint: SkillsFundingAgency
 
 stages:
-- stage: Quality & Unit Tests
+- stage: QualityAndUnitTests
   jobs:
   - template: pipeline-templates/job/quality-unit-test.yml
