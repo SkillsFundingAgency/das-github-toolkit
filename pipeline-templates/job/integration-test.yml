@@ -8,6 +8,8 @@ jobs:
   workspace:
     clean: all
   steps:
+  ##TO DO: remove this task
+  - pwsh: Get-ChildItem ENV:* | Sort-Object Name | Format-Table -AutoSize
   - task: PowerShell@2
     displayName: 'PowerShell: Invoke-IntegrationTests.ps1'
     inputs:
