@@ -30,10 +30,4 @@ stages:
 - stage: QualityAndUnitTests
   jobs:
   - template: pipeline-templates/job/quality-unit-test.yml
-- stage: IntegrationTests
-  ##TO DO: uncomment condition
-  #condition: and(succeeded(), or(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/main')))
-  variables:
-  - group: RELEASE das-github-toolkit
-  jobs:
-  - template: pipeline-templates/job/integration-test.yml
+
