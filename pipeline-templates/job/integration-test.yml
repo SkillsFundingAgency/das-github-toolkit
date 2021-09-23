@@ -16,7 +16,7 @@ jobs:
       pwsh: true
     # note this can be replaced with a PesterContainer after upgrading to Pester v5.x - https://stackoverflow.com/a/65790776/7360635
     env:
-      GitHubPatToken: $(GitHubPatToken)
+      GitHubPatToken: $(GitHubPatTokenSecret)
   - task: PublishTestResults@2
     displayName: Publish Test Results **/TEST-*.xml
     inputs:
