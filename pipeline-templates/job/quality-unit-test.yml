@@ -1,0 +1,38 @@
+jobs:
+- job: QualityAndUnitTestsLinux
+  displayName: "Quality & Unit Tests - Linux"
+  pool:
+    name: "DAS - Continuous Integration"
+    demands:
+      - agent.OS -equals Linux
+      - npm
+      - node.js
+  workspace:
+    clean: all
+  steps:
+  - task: gitversion/setup@0
+    displayName: Install GitVersion
+    inputs:
+      versionSpec: '5.x'
+  - task: gitversion/execute@0
+    displayName: gitversion/execute
+    inputs:
+      useConfigFile: true
+      configFilePath: GitVersion.yml
+  - script: |
+      npm install eclint
+      node $(npm root)/eclint/bin/eclint.js check $(System.DefaultWorkingDirectory)
+    displayName: Validate editorconfig
+    workingDirectory: $(System.DefaultWorkingDirectory)
+  - task: PowerShell@2
+    displayName: 'PowerShell: Invoke-Tests.ps1'
+    inputs:
+      filePath: "tests/Invoke-Tests.ps1"
+      arguments: '-TestType "Quality", "Unit"'
+      pwsh: true
+  - task: PublishTestResults@2
+    displayName: Publish Test Results **/TEST-*.xml
+    inputs:
+      testResultsFormat: NUnit
+      testResultsFiles: "**/TEST-*.xml"
+    condition: succeededOrFailed()

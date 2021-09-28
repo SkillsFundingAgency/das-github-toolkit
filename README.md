@@ -1,6 +1,4 @@
-## ⛔Never push sensitive information such as client id's, secrets or keys into repositories including in the README file⛔
-
-# _Project Name_
+# das-github-toolkit
 
 <img src="https://avatars.githubusercontent.com/u/9841374?s=200&v=4" align="right" alt="UK Government logo">
 
@@ -12,154 +10,65 @@ _Update these badges with the correct information for this project. These give t
 [![Confluence Project](https://img.shields.io/badge/Confluence-Project-blue)](https://skillsfundingagency.atlassian.net/wiki/spaces/_pageurl_)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg?longCache=true&style=flat-square)](https://en.wikipedia.org/wiki/MIT_License)
 
-_Add a description of the project and the high-level features that it provides. This should give new developers an understanding of the background of the project and the reason for its existence._
-
-_For Example_
-
-```
-The ServiceBus Support Utility is an Azure ServiceBus Queue management tool that allows you to manage messages that have moved to error queues without having to resort to managing each message individually.
-
-1. Utilises Azure Active Directory for Authentication
-2. Automatically enumerates error queues within the Azure Service Bus namespace
-3. Messages can be retrieved per queue
-4. Retrieved messages can be:
-    - Aborted - all retrieved messages will be placed back on the queue they were received from
-    - Replayed - messages will be moved back onto the original processing queue so that they can be processed again
-    - Deleted - messages will be removed and will be no longer available for processing
-```
+The DAS GitHub Toolkit PowerShell module provides cmdlets useful for scheduled and ad hoc auditing of repos in the SkillsFundingAgency GitHub organisation and will eventually contain cmdlets to allow for bulk updates and config and automated fixing of config drift.
 
 ## How It Works
 
-_Add a description of how the project works technically, this should give new developers an insight into the how the project hangs together, the core concepts in-use and the high-level features that it provides_
+### Project Structure
 
-_For Example_
-```
-The ServiceBus Utility is a combination of website and background processor that enumerates Azure Service Bus queues within a namespace using the error queue naming convention and presents them to the user as a selectable list, allowing messages on a queue to be retrieved for investigation. Once a queue has been selected the website will retrieve the messages from the error queue and place them into a CosmosDB under the exclusive possession of the logged in user. Once the messages have been moved into the CosmosDB the background processor will ensure that those messages are held for a maximum sliding time period of 24 hours. If messages are still present after this period expires the background processer will move them back to the error queue automatically so that they aren't held indefinitely.
+The [project module](./GitHubToolKit.psm1) file has 2 responsibilities, to load the cmdlets by dot sourcing them and to export those cmdlets as module members.  The former responsibility is offloaded to the [Invoke-DotSourceFiles](./Invoke-DotSourceFiles.ps1) cmdlet, all cmdlets and classes should be loaded via this cmdlet.  Maintaining this pattern ensures that the module is easy to maintain, extend and troubleshoot.
 
-Depending on the action performed by the user the messages will follow one of three paths. In the event that the user Aborts the process, the messages are moved back to the error queue they came from, if the user replays the messages they will be placed back onto the "processing queue" they were on prior to ending up in the error queue and will be removed from the CosmosDB. If the user deletes the messages then they will be removed from the CosmosDB and will be gone forever.
+The module is made up of collections of classes and public and private cmdlets (currently no private cmdlets have been implemented,  but it is anticipated that these may be requried in the future to maintain readability and to ensure that cmdlets that call the REST and GraphQL APIs are not directly exposed).  These classes and cmdlets are grouped in folders using the following structure:
+
 ```
+.
+|--GitHubAudit
+|  |--Classes
+|  |  |--GitHubAuditResult.ps1
+|  |--Functions
+|     |--Private
+|     |--Public
+|        |--Get-GitHubAudit.ps1
+|--GitHubCore
+|  |--Functions
+|     |--Public
+...
+```
+
+At the root of the projects are 3 folders containing special collections of functions plus a number of other folders that contain collections of cmdlets that provide related functionality.  The 3 special folders are:
+- GitHubCore: cmdlets that provide basic functionality that is shared across many cmdlets, eg `Invoke-GitHubRestMethod` and `Set-GitHubSessionInformation`
+- GitHubGraphQL: cmdlets for interacting with the GitHub v4 GraphQL API
+- GitHubRestApi: cmdlets for interacting with the GitHub v3 REST API
 
 ## 🚀 Installation
 
 ### Pre-Requisites
 
-_Add the pre-requisites needed to successfully run the project so that new developers know how they are to setup their development environment_
-
-_For Example_
-```
 * A clone of this repository
-* A code editor that supports Azure functions and .NetCore 3.1
-* A CosmosDB instance or emulator
-* An Azure Service Bus instance
-* An Azure Active Directory account with the appropriate roles as per the [config](https://github.com/SkillsFundingAgency/das-employer-config/blob/master/das-tools-servicebus-support/SFA.DAS.Tools.Servicebus.Support.json)
-* The [das-audit](https://github.com/SkillsFundingAgency/das-audit) API available either running locally or accessible in an Azure tenancy    
-```
-### Config
+* A code editor that supports PowerShell
+* PowerShell Core
+* A GitHub account and a [PAT](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) token with the relevant permissions for the cmdlet(s) you're working on
 
-_Add details of the configuration required to successfully run the project. Adding in the config structure from the das-employer-config repo will help new developers understand what the config looks like and detailing the row keys and partition keys of any config rows will make it obvious where the config needs to be for the project to find it. Adding any further config which does not live in das-employer-config will also assist new developers to get the project running._
+### Local Development
 
-> _If you do add config directly to the README you will be required to keep it up-to-date with any changes made to it in the [das-employer-config repository](https://github.com/SkillsFundingAgency/das-employer-config), for this reason it is suggested that you also provide links to the config in that respoitory so that the latest changes are always available_
+To load the scripts in the VS Code PowerShell Integrated Console open GitHubToolKit\Invoke-DotSourceFiles.ps1 and debug it.  Rerunning this will load any changes to functions but may not load changes to classes.  If errors occur that relate to classes kill the PowerShell Integrated Console, if that doesn't fix the problem close all open PS sessions and VS Code and reopen them.
 
-_For Example_
-```
-This utility uses the standard Apprenticeship Service configuration. All configuration can be found in the [das-employer-config repository](https://github.com/SkillsFundingAgency/das-employer-config).
+After loading the scripts run Set-GitHubSessionInformation in the PowerShell Integrated Console.  To debug a function you will need to add a line after the function in the .ps1 file to call the function.
 
-* A connection string for either the Apprenticeship Services ASB namespace or a namespace you own for development
-* A CosmosDB connection string for either the Apprenticeship Service instance CosmosDB or a CosmosDB you own for development (you can use the emulator)
-* Configure the [das-audit](https://github.com/SkillsFundingAgency/das-audit) project as per [das-employer-config](https://github.com/SkillsFundingAgency/das-employer-config/blob/master/das-audit/SFA.DAS.AuditApiClient.json)
-* Add an appsettings.Development.json file
-    * Add your connection strings for CosmosDB and ASB to the relevant sections of the file
-* The CosmosDB will be created automatically if it does not already exist and the credentials you are connected with have the appropriate rights within the Azure tenant otherwise it will need to be created manually using the details in the config below under `CosmosDbSettings`.
-```
-AppSettings.Development.json file
-```json
-{
-    "Logging": {
-      "LogLevel": {
-        "Default": "Information",
-        "Microsoft": "Warning",
-        "Microsoft.Hosting.Lifetime": "Information"
-      }
-    },
-    "ConfigurationStorageConnectionString": "UseDevelopmentStorage=true;",
-    "ConfigNames": "SFA.DAS.Tools.Servicebus.Support,SFA.DAS.AuditApiClient",
-    "EnvironmentName": "LOCAL",
-    "Version": "1.0",
-    "APPINSIGHTS_INSTRUMENTATIONKEY": ""
-  }  
-```
+If you have `powershell.debugging.createTemporaryIntegratedConsole` set to `true` this debugging approach will not work.
 
-Azure Table Storage config
-
-Row Key: SFA.DAS.Tools.Servicebus.Support_1.0
-
-Partition Key: LOCAL
-
-Data:
-
-```json
-{
-  "BaseUrl": "localhost:5001",
-  "UserIdentitySettings":{
-    "RequiredRole": "Servicebus Admin", 
-    "UserSessionExpiryHours": 24,
-    "UserRefreshSessionIntervalMinutes": 5,
-    "NameClaim": "name"
-  },
-  "ServiceBusSettings":{
-    "ServiceBusConnectionString": "",
-    "QueueSelectionRegex": "[-,_]+error",
-    "PeekMessageBatchSize": 10,
-    "MaxRetrievalSize": 250,
-    "ErrorQueueRegex": "[-,_]error[s]*$",
-    "RedactPatterns": [
-      "(.*SharedAccessKey=)([\\s\\S]+=)(.*)"
-    ]
-  },
-  "CosmosDbSettings":{
-    "Url": "",
-    "AuthKey": "",
-    "DatabaseName": "QueueExplorer",
-    "CollectionName": "Session",
-    "Throughput": 400,
-    "DefaultCosmosOperationTimeout": 55,
-    "DefaultCosmosInterimRequestTimeout": 2
-  }
-}
-```
+To load the module in a PowerShell console run `Import-Module .\GitHubToolKit\GitHubToolKit.psm1 -Force`, force is required to ensure changes to functions are imported.
 
 ## 🔗 External Dependencies
 
-_Add details of any external dependencies that are required for the project to run, this could be details of authentication providers, API's or stubs/test harnesses._
-
-_For Example_
-```
-* This utility uses the [das-audit](https://github.com/SkillsFundingAgency/das-audit) Api to log changes
-```
+None
 
 ## Technologies
 
-_List the key technologies in-use in the project. This will give an indication as to the skill set required to understand and contribute to the project_
-
-_For Example_
-```
-* .NetCore 3.1
-* Azure Functions V3
-* CosmosDB
-* REDIS
-* NLog
-* Azure Table Storage
-* NUnit
-* Moq
-* FluentAssertions
-```
+* PowerShell Core
+* GitHub Rest API
+* GitHub Graph API
 
 ## 🐛 Known Issues
 
-_Add any known issues with the project_
-
-_For Example_
-
-```
-* Fails when built under VS2019
-```
+None
