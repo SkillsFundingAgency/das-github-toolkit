@@ -8,14 +8,13 @@
     runOnce:
       deploy:
         steps:
-          - checkout: self
-          - task: GitHubRelease@0
-            inputs:
-              gitHubConnection: SFA
-              repositoryName: $(Build.Repository.Name)
-              action: create
-              target: $(Build.SourceVersion)
-              tagSource: manual
-              tag: $(Build.BuildNumber)
-              addChangeLog: true
+        - task: GitHubRelease@0
+          inputs:
+            gitHubConnection: SFA
+            repositoryName: $(Build.Repository.Name)
+            action: create
+            target: $(Build.SourceVersion)
+            tagSource: manual
+            tag: $(Build.BuildNumber)
+            addChangeLog: true
 
