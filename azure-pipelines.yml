@@ -34,5 +34,5 @@ stages:
   ##TO DO: uncomment this
   ##condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
   jobs:
-  - template: templates/job/release.yml
+  - template: pipeline-templates/job/release.yml
 
