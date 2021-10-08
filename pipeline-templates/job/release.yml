@@ -8,6 +8,7 @@
     runOnce:
       deploy:
         steps:
+          - checkout: self
           - task: GitHubRelease@0
             inputs:
               gitHubConnection: SFA
