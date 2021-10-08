@@ -18,5 +18,4 @@
               tagSource: manual
               tag: $(Build.BuildNumber)
               addChangeLog: true
-              assets: |
-                $(System.DefaultWorkingDirectory)/src/**/*.*
+
