@@ -30,4 +30,8 @@ stages:
 - stage: QualityAndUnitTests
   jobs:
   - template: pipeline-templates/job/quality-unit-test.yml
+- stage: Release
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+  jobs:
+  - template: pipeline-templates/job/release.yml
 
