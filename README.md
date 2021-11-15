@@ -16,7 +16,7 @@ The DAS GitHub Toolkit PowerShell module provides cmdlets useful for scheduled a
 
 ### Project Structure
 
-The [project module](./GitHubToolKit.psm1) file has 2 responsibilities, to load the cmdlets by dot sourcing them and to export those cmdlets as module members.  The former responsibility is offloaded to the [Invoke-DotSourceFiles](./Invoke-DotSourceFiles.ps1) cmdlet, all cmdlets and classes should be loaded via this cmdlet.  Maintaining this pattern ensures that the module is easy to maintain, extend and troubleshoot.
+The [project module](./src/GitHubToolKit.psm1) file has 2 responsibilities, to load the cmdlets by dot sourcing them and to export those cmdlets as module members.  The former responsibility is offloaded to the [Invoke-DotSourceFiles](./src/Invoke-DotSourceFiles.ps1) cmdlet, all cmdlets and classes should be loaded via this cmdlet.  Maintaining this pattern ensures that the module is easy to maintain, extend and troubleshoot.
 
 The module is made up of collections of classes and public and private cmdlets (currently no private cmdlets have been implemented,  but it is anticipated that these may be requried in the future to maintain readability and to ensure that cmdlets that call the REST and GraphQL APIs are not directly exposed).  These classes and cmdlets are grouped in folders using the following structure:
 
@@ -51,7 +51,7 @@ At the root of the projects are 3 folders containing special collections of func
 
 ### Local Development
 
-To load the scripts in the VS Code PowerShell Integrated Console open GitHubToolKit\Invoke-DotSourceFiles.ps1 and debug it.  Rerunning this will load any changes to functions but may not load changes to classes.  If errors occur that relate to classes kill the PowerShell Integrated Console, if that doesn't fix the problem close all open PS sessions and VS Code and reopen them.
+To load the scripts in the VS Code PowerShell Integrated Console open [Invoke-DotSourceFiles](./src/Invoke-DotSourceFiles.ps1) and debug it.  Rerunning this will load any changes to functions but may not load changes to classes.  If errors occur that relate to classes kill the PowerShell Integrated Console, if that doesn't fix the problem close all open PS sessions and VS Code and reopen them.
 
 After loading the scripts run Set-GitHubSessionInformation in the PowerShell Integrated Console.  To debug a function you will need to add a line after the function in the .ps1 file to call the function.
 
