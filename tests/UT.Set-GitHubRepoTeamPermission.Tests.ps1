@@ -8,7 +8,7 @@ Describe "Set-GitHubRepoTeamPermission tests" -Tags @("Unit") {
             PatToken = "not-a-real-pat-token"
             GitHubOrg = "FooBarAgency"
             TeamSlug = "foo-contributor"
-            Permission = "read"
+            Permission = "pull"
             Repo = "foo-bar-repo"
         }
     }
