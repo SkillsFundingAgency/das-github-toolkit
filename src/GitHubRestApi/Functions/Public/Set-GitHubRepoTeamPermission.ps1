@@ -43,7 +43,7 @@ function Set-GitHubRepoTeamPermission {
         [Parameter(Mandatory = $true)]
         [String]$TeamSlug,
         [Parameter(Mandatory = $true)]
-        [ValidateSet("read", "write", "admin", "maintain", "triage")]
+        [ValidateSet("pull", "push", "admin", "maintain", "triage")]
         [String]$Permission,
         [Parameter(Mandatory = $true)]
         [String]$Repo,
