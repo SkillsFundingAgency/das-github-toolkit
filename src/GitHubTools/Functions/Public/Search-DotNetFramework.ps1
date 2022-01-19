@@ -23,13 +23,14 @@ Search-DotNetFramework -PackageName Microsoft.Extensions.Configuration -GitHubOr
 #>
 function Search-DotNetFramework {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSReviewUnusedParameter", "RepositoryPrefix", Justification = "False positive as rule does not know that Where-Object operates within the same scope")]
+    [OutputType([GitHubDotNetFrameworkSearch[]])]
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory=$false)]
+        [Parameter(Mandatory = $false)]
         [String]$GitHubOrganisation = "SkillsFundingAgency",
-        [Parameter(Mandatory=$false)]
+        [Parameter(Mandatory = $false)]
         [String]$RepositoryPrefix = "das-",
-        [Parameter(Mandatory=$false)]
+        [Parameter(Mandatory = $false)]
         [String]$CsvOutputPath
     )
 
@@ -37,78 +38,82 @@ function Search-DotNetFramework {
     Write-Verbose "Searching $($Repos.Count) repos ..."
 
     $Files = @()
-    $SearchResults = @()
-    foreach ($Repo in $Repos) {
-        $Files += Invoke-GitHubRestMethod -Method GET $('/search/code?q=org%3A' + $GitHubOrganisation + '+repo%3A' + $GitHubOrganisation +'/' + $Repo.name + '+extension%3Acsproj' + '+Project')
-    }
+    $SearchResults = [GitHubDotNetFrameworkSearch[]]@()
 
-    if (!$Files.total_count) {
-        throw "No csproj files retrieved"
-    }
+    for ($r = 0; $r -lt $Repos.Count; $r++) {
+        Write-Progress -Id 1 -Activity "Checking Repos" -Status $Repos[$r].name -PercentComplete ((($r + 1) / ($Repos.Count + 1)) * 100)
+        $Files = Invoke-GitHubRestMethod -Method GET $('/search/code?q=org%3A' + $GitHubOrganisation + '+repo%3A' + $GitHubOrganisation + '/' + $Repos[$r].name + '+extension%3Acsproj' + '+Project&per_page=100')
 
-    $Files = $Files.items
-
-    foreach ($File in $Files) {
-        try {
-            $FileContentHeader = @{ Accept = "application/vnd.github.v3.raw" }
-            $FileContent = Invoke-GitHubRestMethod -Method GET -Uri "/repos/$GitHubOrganisation/$($File.repository.name)/contents/$($File.path)" -Headers $FileContentHeader
-        }
-        catch [System.Net.Http.HttpRequestException]{
-            Write-Warning "$($_.Exception.Response.StatusCode) $FileUri"
+        if (!$Files.total_count) {
+            Write-Warning "No csproj files retrieved from $($Repos[$r].name)"
             continue
         }
-        catch {
-            throw $_
-        }
+        $Files = $Files.items
 
-        if ($FileContent.GetType().Name -eq "XmlDocument") {
-            $FileContent = $FileContent.OuterXml
-        }
+        for ($i = 0; $i -lt $Files.Count; $i++) {
+            Write-Progress -Id 2 -ParentId 1 -Activity "Checking Files" -Status $Files[$i].name -PercentComplete ((($i + 1) / ($Files.Count + 1)) * 100)
+            try {
+                $FileContentHeader = @{ Accept = "application/vnd.github.v3.raw" }
+                $FileUri = "/repos/$GitHubOrganisation/$($Files[$i].repository.name)/contents/$($Files[$i].path)"
+                $FileContent = Invoke-GitHubRestMethod -Method GET -Uri $FileUri -Headers $FileContentHeader
+            }
+            catch [System.Net.Http.HttpRequestException] {
+                Write-Warning "$($_.Exception.Response.StatusCode) $FileUri"
+                continue
+            }
+            catch {
+                throw $_
+            }
 
-        Remove-Variable -Name Matches -ErrorAction SilentlyContinue
-        Remove-Variable -Name Version -ErrorAction SilentlyContinue
-        $Pattern = "<TargetFramework\w*>(.*)</TargetFramework\w*>"
-        $null = $FileContent -match $Pattern
-        if ($Matches) {
-            $MatchResult = $Matches[1]
-            $FrameworkPattern = "^(v|net)([1-4][\d\.]+)"
-            $CorePattern = "(\w{3,})(\d\.\d)"
-            if ($MatchResult -match $FrameworkPattern) {
-                $FrameworkType = "framework"
-                $VersionString = $Matches[2]
-                if ($VersionString -match "^\d+$") {
-                    Write-Verbose "Parsing framework version from legacy version '$VersionString'"
-                    $Digits = ($VersionString -split '').Count
-                    $Version = ($VersionString -split '')[1..($Digits-2)] -join '.'
+            if ($FileContent.GetType().Name -eq "XmlDocument") {
+                $FileContent = $FileContent.OuterXml
+            }
+
+            Remove-Variable -Name Matches -ErrorAction SilentlyContinue
+            Remove-Variable -Name Version -ErrorAction SilentlyContinue
+            $Pattern = "<TargetFramework\w*>(.*)</TargetFramework\w*>"
+            $null = $FileContent -match $Pattern
+            if ($Matches) {
+                $MatchResult = $Matches[1]
+                $FrameworkPattern = "^(v|net)([1-4][\d\.]+)"
+                $CorePattern = "(\w{3,})(\d\.\d)"
+                if ($MatchResult -match $FrameworkPattern) {
+                    $FrameworkType = "framework"
+                    $VersionString = $Matches[2]
+                    if ($VersionString -match "^\d+$") {
+                        Write-Verbose "Parsing framework version from legacy version '$VersionString'"
+                        $Digits = ($VersionString -split '').Count
+                        $Version = ($VersionString -split '')[1..($Digits - 2)] -join '.'
+                    }
+                    else {
+                        Write-Verbose "Setting framework version to '$VersionString'"
+                        $Version = $VersionString
+                    }
+                }
+                elseif ($MatchResult -match $CorePattern) {
+                    Write-Verbose "Setting $($Matches[1]) version to '$($Matches[2])'"
+                    $FrameworkType = $Matches[1]
+                    $Version = $Matches[2]
                 }
                 else {
-                    Write-Verbose "Setting framework version to '$VersionString'"
-                    $Version = $VersionString
+                    Write-Warning "TargetFramework value $MatchResult in $($Files[$i].path) in repository $($Files[$i].repository.name) didn't match any known patterns"
                 }
-            }
-            elseif ($MatchResult -match $CorePattern) {
-                Write-Verbose "Setting $($Matches[1]) version to '$($Matches[2])'"
-                $FrameworkType = $Matches[1]
-                $Version = $Matches[2]
+
+                $SearchResult = New-Object -TypeName GitHubDotNetFrameworkSearch -Property @{
+                    Repository     = $Files[$i].repository.name
+                    FrameworkType  = $FrameworkType
+                    Version        = $Version
+                    ConfigFilePath = $Files[$i].path
+                }
+                $SearchResults += $SearchResult
             }
             else {
-                Write-Warning "TargetFramework value $MatchResult in $($File.path) in repository $($File.repository.name) didn't match any known patterns"
+                Write-Warning "TargetFramework not found in file $($Files[$i].path) in repository $($Files[$i].repository.name)"
             }
-
-            $SearchResult = New-Object -TypeName GitHubDotNetFrameworkSearch -Property @{
-                Repository = $File.repository.name
-                FrameworkType = $FrameworkType
-                Version = $Version
-                ConfigFilePath = $File.path
-            }
-            $SearchResults += $SearchResult
-        }
-        else {
-            Write-Warning "TargetFramework not found in file $($File.path) in repository $($File.repository.name)"
         }
     }
 
-    if($CsvOutputPath) {
+    if ($CsvOutputPath) {
         $SearchResults | Export-Csv -Path $CsvOutputPath
     }
 
