@@ -178,7 +178,7 @@ function Invoke-GitHubRestMethod {
         for ($i = 2; $i -le $LastPage; $i++) {
 
             #pause to ensure rate limit not hit
-            Start-Sleep -Seconds 3
+            Start-Sleep -Seconds 2
             #replace the page parameter value with $i
             $PageLink = $ResponseHeaders.Link.Split(";")[0] -replace "(page=)(\d*)","page=$i"
             #strip out the angle brackets from the url

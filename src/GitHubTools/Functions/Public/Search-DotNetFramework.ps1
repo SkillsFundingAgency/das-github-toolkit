@@ -23,6 +23,7 @@ Search-DotNetFramework -PackageName Microsoft.Extensions.Configuration -GitHubOr
 #>
 function Search-DotNetFramework {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSReviewUnusedParameter", "RepositoryPrefix", Justification = "False positive as rule does not know that Where-Object operates within the same scope")]
+    [OutputType([GitHubDotNetFrameworkSearch[]])]
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false)]
@@ -37,7 +38,7 @@ function Search-DotNetFramework {
     Write-Verbose "Searching $($Repos.Count) repos ..."
 
     $Files = @()
-    $SearchResults = @()
+    $SearchResults = [GitHubDotNetFrameworkSearch[]]@()
 
     for ($r = 0; $r -lt $Repos.Count; $r++) {
         Write-Progress -Id 1 -Activity "Checking Repos" -Status $Repos[$r].name -PercentComplete ((($r + 1) / ($Repos.Count + 1)) * 100)
@@ -52,10 +53,12 @@ function Search-DotNetFramework {
         for ($i = 0; $i -lt $Files.Count; $i++) {
             Write-Progress -Id 2 -ParentId 1 -Activity "Checking Files" -Status $Files[$i].name -PercentComplete ((($i + 1) / ($Files.Count + 1)) * 100)
             try {
-                $FileContent = Invoke-RestMethod -Uri $Files[$i].html_url.Replace("/blob/", "/raw/")
+                $FileContentHeader = @{ Accept = "application/vnd.github.v3.raw" }
+                $FileUri = "/repos/$GitHubOrganisation/$($Files[$i].repository.name)/contents/$($Files[$i].path)"
+                $FileContent = Invoke-GitHubRestMethod -Method GET -Uri $FileUri -Headers $FileContentHeader
             }
             catch [System.Net.Http.HttpRequestException] {
-                Write-Warning "$($_.Exception.Response.StatusCode) $($Files[$i].path)"
+                Write-Warning "$($_.Exception.Response.StatusCode) $FileUri"
                 continue
             }
             catch {

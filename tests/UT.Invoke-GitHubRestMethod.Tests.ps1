@@ -100,13 +100,13 @@ Describe "Invoke-GitHubRestMethod tests" -Tags @("Unit") {
         }
     }
 
-    Context "GitHub API responds with a remaining rate limit header less than 25% of the the limit" {
+    Context "GitHub API responds with a remaining rate limit header less than 20% of the the limit" {
         Mock Invoke-RestMethod -ModuleName GitHubToolKit -MockWith {
             $Script:ResponseHeaders = @{
                 Link = $null
                 "X-RateLimit-Resource" = @("core")
                 "X-RateLimit-Limit" = @("60")
-                "X-RateLimit-Remaining" = @("14")
+                "X-RateLimit-Remaining" = @("11")
                 "X-RateLimit-Reset" = @("$(Get-Date -Date (Get-Date).AddMinutes(1) -UFormat %s)")
             }
             return @{
