@@ -81,7 +81,7 @@ function Invoke-GitHubRestMethod {
 
         $RateLimitRemainingPercentage = $Remaining / $Limit
         Write-Verbose "$Api rate limit remaining percentage: $($RateLimitRemainingPercentage * 100)"
-        if ($RateLimitRemainingPercentage -lt 0.25) {
+        if ($RateLimitRemainingPercentage -lt 0.20) {
             $TimeToRateLimitReset = ((Get-Date -UnixTimeSeconds $Reset) - (Get-Date)).TotalSeconds
             if ($TimeToRateLimitReset -gt 0) {
                 Write-Warning "Approaching Rate Limit, waiting for $TimeToRateLimitReset seconds"
@@ -117,11 +117,11 @@ function Invoke-GitHubRestMethod {
     }
 
     $Params = @{
-
         Method = $Method
         Headers = $Headers
         Uri = $FullURI
-
+        RetryIntervalSec = 15
+        MaximumRetryCount = 3
     }
 
     if ($PSBoundParameters.ContainsKey("Body")) {
@@ -174,7 +174,7 @@ function Invoke-GitHubRestMethod {
         #use regex to retrieve the page properties from the Link response header
         $PageNumbers = Select-String "page=(\d*)" -InputObject $ResponseHeaders.Link -AllMatches | ForEach-Object  {$_.matches}
         #get the value of the last page
-        $LastPage = $PageNumbers[1].Groups[1].Value
+        $LastPage = $PageNumbers[-1].Groups[1].Value
         for ($i = 2; $i -le $LastPage; $i++) {
 
             #pause to ensure rate limit not hit
