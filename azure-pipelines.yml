@@ -13,7 +13,7 @@ variables:
   value: any cpu
 
 pool:
-  name: DAS - Continuous Integration
+  name: DAS - Continuous Integration Agents
   workspace:
     clean: all
 
