@@ -2,7 +2,7 @@ jobs:
 - job: QualityAndUnitTestsLinux
   displayName: "Quality & Unit Tests - Linux"
   pool:
-    name: "DAS - Continuous Integration"
+    name: "DAS - Continuous Integration Agents"
     demands:
       - agent.OS -equals Linux
       - npm
