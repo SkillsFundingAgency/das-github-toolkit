@@ -27,6 +27,9 @@ function Invoke-GitHubRestMethod {
     .PARAMETER Headers
     Optional Headers to send. This will override the default set provided
 
+    .PARAMETER CollectionName
+    Optional.  The name of the collection returned by the GitHub REST API, by default will look for a collection called "items".
+
     .INPUTS
     System.String
 
@@ -67,8 +70,11 @@ function Invoke-GitHubRestMethod {
 
         [Parameter(Mandatory=$false, Position=6)]
         [ValidateNotNullOrEmpty()]
-        [System.Collections.IDictionary]$Headers
+        [System.Collections.IDictionary]$Headers,
 
+        [Parameter(Mandatory=$false, Position=7)]
+        [ValidateNotNullOrEmpty()]
+        [String]$CollectionName
     )
 
     function Wait-GitHubRateLimit {
@@ -195,8 +201,23 @@ function Invoke-GitHubRestMethod {
             if ($PageResponse.GetType().ToString() -eq "System.Object[]") {
                 $Response += $PageResponse
             }
-            elseif ($PageResponse.items.GetType().ToString() -eq "System.Object[]") {
+            elseif ($CollectionName) {
+                if ((($Response | Get-member -Name $CollectionName).Definition -split " ")[0] -eq "Object[]") {
+                    Remove-Variable AppendedCollection -ErrorAction SilentlyContinue
+                    $AppendedCollection = $Response | Select-Object -ExpandProperty $CollectionName
+                    $AppendedCollection += $PageResponse | Select-Object -ExpandProperty $CollectionName
+                    $Response | Add-Member -Name $CollectionName -Value $AppendedCollection -MemberType NoteProperty -Force
+                }
+                else {
+                    Write-Error "$CollectionName is not a collection"
+                }
+
+            }
+            elseif ($PageResponse.items -and $PageResponse.items.GetType().ToString() -eq "System.Object[]") {
                 $Response.items += $PageResponse.items
+            }
+            else  {
+                Write-Warning "Collection not found in page response"
             }
 
             if ($ResponseHeaders) {
