@@ -27,6 +27,9 @@ function Invoke-GitHubRestMethod {
     .PARAMETER Headers
     Optional Headers to send. This will override the default set provided
 
+    .PARAMETER CollectionName
+    Optional.  The name of the collection returned by the GitHub REST API, by default will look for a collection called "items".
+
     .INPUTS
     System.String
 
