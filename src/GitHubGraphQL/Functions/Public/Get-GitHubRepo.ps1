@@ -27,7 +27,7 @@ function Get-GitHubRepo {
     while ($HasNextPage) {
         $BranchQuery = @"
 {
-    "query": "query { organization(login: \"$GitHubOrg\") { repositories(first: 100$PageInfo) { nodes { name isArchived isPrivate } pageInfo { endCursor hasNextPage } } } }"
+    "query": "query { organization(login: \"$GitHubOrg\") { repositories(first: 100$PageInfo) { nodes { name isArchived isPrivate defaultBranchRef { name } } pageInfo { endCursor hasNextPage } } } }"
 }
 "@
 

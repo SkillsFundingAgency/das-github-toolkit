@@ -13,6 +13,7 @@ param()
 
 $ClassPaths = @(
     "$($PSScriptRoot)\GitHubAudit\Classes\*.ps1"
+    "$($PSScriptRoot)\GitHubRestApi\Classes\*.ps1"
     "$($PSScriptRoot)\GitHubTools\Classes\*.ps1"
 )
 
