@@ -1,3 +1,29 @@
+<#
+
+.SYNOPSIS
+Gets the content of a specified file for a specified repository
+
+.DESCRIPTION
+Gets the content of a specified file for a specified repository
+
+.PARAMETER GitHubOrganisation
+The GitHub organisation
+
+.PARAMETER RepositoryName
+The repository of the GitHub organisation
+
+.PARAMETER FilePath
+The path to the file in the repository to retrieve content
+
+.EXAMPLE
+Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
+Get-GitHubRepoFileContent -GitHubOrganisation MyOrganisation -RepositoryName MyRepository -FilePath ./folderA/fileB.yml
+
+.NOTES
+The documentation for the GitHub endpoint used by this function can be found here:
+https://docs.github.com/en/rest/repos/contents#get-repository-content
+
+#>
 function Get-GitHubRepoFileContent {
     [CmdletBinding()]
     param(

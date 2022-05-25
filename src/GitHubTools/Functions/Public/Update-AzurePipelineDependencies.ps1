@@ -1,3 +1,22 @@
+<#
+
+.SYNOPSIS
+Updates the refs of the azure-pipelines.yml file's repository resources to the latest
+
+.DESCRIPTION
+Updates the refs of the azure-pipelines.yml file's repository resources to the latest
+
+.PARAMETER GitHubOrganisation
+The GitHub organisation
+
+.PARAMETER RepositoryPrefix
+The prefix of repositories to create new branches with updated pipeline dependencies
+
+.EXAMPLE
+Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
+Update-AzurePipelineDependencies -GitHubOrganisation MyOrganisation -RepositoryPrefix foo-
+
+#>
 function Update-AzurePipelineDependencies {
     param(
         [Parameter(Mandatory = $false)]
@@ -24,7 +43,7 @@ function Update-AzurePipelineDependencies {
                 $TagName = $_.ref.replace("refs/tags/", "")
                 $DependencyOrg = $_.name.Split("/")[0]
                 $DependencyRepo = $_.name.Split("/")[1]
-                $Releases = Get-GitHubRepoReleases -GitHubOrganisation $DependencyOrg  -RepositoryName $DependencyRepo
+                $Releases = Get-GitHubRepoReleases -GitHubOrganisation $DependencyOrg -RepositoryName $DependencyRepo
                 $OutOfDate = $Releases[0].tag_name -ne $TagName
 
                 if ($OutOfDate) {
