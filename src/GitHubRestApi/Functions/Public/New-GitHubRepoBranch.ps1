@@ -30,6 +30,7 @@ https://docs.github.com/en/rest/git/refs#create-a-reference
 #>
 function New-GitHubRepoBranch {
     [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "")]
     param(
         [Parameter(Mandatory = $true)]
         [String]$GitHubOrganisation,

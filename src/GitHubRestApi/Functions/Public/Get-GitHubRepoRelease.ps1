@@ -14,14 +14,14 @@ The repository of the GitHub organisation
 
 .EXAMPLE
 Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
-Get-GitHubRepoReleases -GitHubOrganisation MyOrganisation -RepositoryName MyRepository
+Get-GitHubRepoRelease -GitHubOrganisation MyOrganisation -RepositoryName MyRepository
 
 .NOTES
 The documentation for the GitHub endpoint used by this function can be found here:
 https://docs.github.com/en/rest/releases/releases#list-releases
 
 #>
-function Get-GitHubRepoReleases {
+function Get-GitHubRepoRelease {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]

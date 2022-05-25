@@ -18,6 +18,9 @@ Update-AzurePipelineDependencies -GitHubOrganisation MyOrganisation -RepositoryP
 
 #>
 function Update-AzurePipelineDependencies {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSReviewUnusedParameter", "RepoSearchString", Justification = "False positive as rule does not know that Where-Object operates within the same scope")]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "")]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "")]
     param(
         [Parameter(Mandatory = $false)]
         [String]$GitHubOrganisation = "SkillsFundingAgency",
@@ -43,7 +46,7 @@ function Update-AzurePipelineDependencies {
                 $TagName = $_.ref.replace("refs/tags/", "")
                 $DependencyOrg = $_.name.Split("/")[0]
                 $DependencyRepo = $_.name.Split("/")[1]
-                $Releases = Get-GitHubRepoReleases -GitHubOrganisation $DependencyOrg -RepositoryName $DependencyRepo
+                $Releases = Get-GitHubRepoRelease -GitHubOrganisation $DependencyOrg -RepositoryName $DependencyRepo
                 $OutOfDate = $Releases[0].tag_name -ne $TagName
 
                 if ($OutOfDate) {
