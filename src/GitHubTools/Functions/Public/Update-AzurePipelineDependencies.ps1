@@ -16,6 +16,10 @@ The prefix of repositories to create new branches with updated pipeline dependen
 Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
 Update-AzurePipelineDependencies -GitHubOrganisation MyOrganisation -RepositoryPrefix foo-
 
+.NOTES
+powershell-yaml powershell module is required. Install-Module -name powershell-yaml
+PAT TOKEN
+
 #>
 function Update-AzurePipelineDependencies {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSReviewUnusedParameter", "RepositoryPrefix", Justification = "False positive as rule does not know that Where-Object operates within the same scope")]
@@ -66,7 +70,7 @@ function Update-AzurePipelineDependencies {
         $User = Read-Host -Prompt "Commit changes? y/n"
 
         if ($User -eq 'y') {
-            $NewBranchName = "pipeline-dependency-updates"
+            $NewBranchName = "pipeline-dependency-updates-" + (Get-Date -Format "ddMM-HHmm")
 
             $DefaultBranchRef = Get-GithubRepoBranchRef -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -BranchName $_.defaultBranchRef.name
 
