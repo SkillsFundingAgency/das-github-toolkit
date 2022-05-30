@@ -67,6 +67,17 @@ function Update-AzurePipelineDependencies {
             }
         }
 
+        $PipelineYml.Content = $PipelineYml.Content.Replace("      - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks", "")
+
+        $CodeBuildYml = Get-GitHubRepoFileContent -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -FilePath "pipeline-templates/job/code-build.yml"
+
+        $UpdateCodeBuildYml = $false
+        if ($CodeBuildYml) {
+            if ($CodeBuildYml.Content.Contains("  - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks")) {
+                $CodeBuildYml.Content = $CodeBuildYml.Content.Replace("  - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks", "")
+                $UpdateCodeBuildYml = $true
+            }
+        }
         $User = Read-Host -Prompt "Commit changes? y/n"
 
         if ($User -eq 'y') {
@@ -87,6 +98,20 @@ function Update-AzurePipelineDependencies {
                 BaseRefSha         = $PipelineYml.Sha
             }
             Set-GitHubRepoFileContent @FileContentParams
+
+            if ($UpdateCodeBuildYml) {
+                $CodeBuildYml.Content
+                $FileContentParams = @{
+                    GitHubOrganisation = $GitHubOrganisation
+                    RepositoryName     = $Repo.Name
+                    BranchName         = $NewBranchName
+                    FilePath           = "pipeline-templates/job/code-build.yml"
+                    FileContent        = $CodeBuildYml.Content
+                    CommitMessage      = "Removing dependency-check template task"
+                    BaseRefSha         = $CodeBuildYml.Sha
+                }
+                Set-GitHubRepoFileContent @FileContentParams
+            }
         }
     }
 }
