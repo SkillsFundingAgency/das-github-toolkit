@@ -70,7 +70,7 @@ function Update-AzurePipelineDependencies {
         $User = Read-Host -Prompt "Commit changes? y/n"
 
         if ($User -eq 'y') {
-            $NewBranchName = "pipeline-dependency-updates-" + (Get-Date -Format "ddMM-HHmm")
+            $NewBranchName = "pipeline-dependency-updates-" + (Get-Date -Format "FileDate")
 
             $DefaultBranchRef = Get-GithubRepoBranchRef -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -BranchName $_.defaultBranchRef.name
 
