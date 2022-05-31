@@ -18,7 +18,7 @@ Update-AzurePipelineDependencies -GitHubOrganisation MyOrganisation -RepositoryP
 
 .NOTES
 powershell-yaml powershell module is required. Install-Module -name powershell-yaml
-PAT TOKEN
+The powershell-yaml module is no longer being maintained https://github.com/aaubry/YamlDotNet/discussions/689
 
 #>
 function Update-AzurePipelineDependencies {
