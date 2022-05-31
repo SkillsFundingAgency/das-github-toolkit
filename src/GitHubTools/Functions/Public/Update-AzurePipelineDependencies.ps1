@@ -101,7 +101,6 @@ function Update-AzurePipelineDependencies {
             Set-GitHubRepoFileContent @FileContentParams
 
             if ($UpdateCodeBuildYml) {
-                $CodeBuildYml.Content
                 $FileContentParams = @{
                     GitHubOrganisation = $GitHubOrganisation
                     RepositoryName     = $Repo.Name
