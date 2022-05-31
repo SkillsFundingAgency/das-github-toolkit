@@ -20,18 +20,18 @@ Describe "Update-AzurePipelineDependencies tests" -Tags @("Unit") {
             Content =
             @'
 resources:
-  repositories:
-  - repository: self
-  - repository: das-platform-building-blocks
-    type: github
-    name: FooOrg/FooRepository
-    ref: refs/tags/0.4.34
-    endpoint: FooServiceConnection
-  - repository: das-platform-automation
-    type: github
-    name: FooOrg/BarRepository
-    ref: refs/tags/4.5.14
-    endpoint: FooServiceConnection
+    repositories:
+    - repository: self
+    - repository: das-platform-building-blocks
+        type: github
+        name: FooOrg/FooRepository
+        ref: refs/tags/0.4.34
+        endpoint: FooServiceConnection
+    - repository: das-platform-automation
+        type: github
+        name: FooOrg/BarRepository
+        ref: refs/tags/4.5.14
+        endpoint: FooServiceConnection
 '@
         }
     }
@@ -45,7 +45,7 @@ resources:
                 tag_name = "9.2.0"
             }
         )
-    }    
+    }
 
     Mock Get-GithubRepoBranchRef -ModuleName GitHubToolKit -MockWith {
         @{
@@ -57,7 +57,7 @@ resources:
 
     Mock New-GitHubRepoBranch -ModuleName GitHubToolKit -MockWith {
     }
-    
+
     Mock Set-GitHubRepoFileContent -ModuleName GitHubToolKit -MockWith {
     }
 
