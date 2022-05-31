@@ -45,6 +45,7 @@ function Update-AzurePipelineDependencies {
 
         $Pipeline = ConvertFrom-Yaml -Yaml $PipelineYml.Content
 
+        $UpdatePipelineYml = $false
         $Pipeline.resources.repositories | Where-Object { $_.type -eq "github" } | ForEach-Object {
             if ($_.ref -like "refs/tags/*") {
                 $TagName = $_.ref.replace("refs/tags/", "")
@@ -56,6 +57,7 @@ function Update-AzurePipelineDependencies {
                 if ($OutOfDate) {
                     Write-Warning "$($_.name) dependency: $TagName should be $($Releases[0].tag_name): updating"
                     $PipelineYml.Content = $PipelineYml.Content.Replace($TagName, $Releases[0].tag_name)
+                    $UpdatePipelineYml = $true
                 }
                 else {
                     Write-Host "$($_.name) dependency up to date" -ForegroundColor Green
@@ -78,9 +80,7 @@ function Update-AzurePipelineDependencies {
                 $UpdateCodeBuildYml = $true
             }
         }
-        $User = Read-Host -Prompt "Commit changes? y/n"
-
-        if ($User -eq 'y') {
+        if ($UpdatePipelineYml || $UpdateCodeBuildYml) {
             $NewBranchName = "pipeline-dependency-updates-" + (Get-Date -Format "FileDate")
 
             $DefaultBranchRef = Get-GithubRepoBranchRef -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -BranchName $_.defaultBranchRef.name
