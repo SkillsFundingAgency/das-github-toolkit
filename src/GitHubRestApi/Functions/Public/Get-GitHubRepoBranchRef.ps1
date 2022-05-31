@@ -24,7 +24,7 @@ The documentation for the GitHub endpoint used by this function can be found her
 https://docs.github.com/en/rest/git/refs#get-a-reference
 
 #>
-function Get-GithubRepoBranchRef
+function Get-GitHubRepoBranchRef
 {
     [CmdletBinding()]
     param(
@@ -36,7 +36,7 @@ function Get-GithubRepoBranchRef
         [String]$BranchName
     )
 
-    $BranchRef = Invoke-GithubRestMethod -Method GET -Uri "/repos/$GitHubOrganisation/$RepositoryName/git/ref/heads/$BranchName"
+    $BranchRef = Invoke-GitHubRestMethod -Method GET -Uri "/repos/$GitHubOrganisation/$RepositoryName/git/ref/heads/$BranchName"
 
     return $BranchRef
 }

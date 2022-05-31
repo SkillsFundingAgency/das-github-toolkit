@@ -30,7 +30,7 @@ function Get-GitHubRepoRelease {
         [String]$RepositoryName
     )
 
-    $Releases = Invoke-GithubRestMethod -Method GET -Uri "/repos/$GitHubOrganisation/$RepositoryName/releases"
+    $Releases = Invoke-GitHubRestMethod -Method GET -Uri "/repos/$GitHubOrganisation/$RepositoryName/releases"
 
     return $Releases
 }

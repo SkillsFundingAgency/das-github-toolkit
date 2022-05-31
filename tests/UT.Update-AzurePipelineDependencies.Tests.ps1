@@ -66,7 +66,7 @@ resources:
             Set-GitHubSessionInformation -PatToken "not-a-real-pat-token"
             Update-AzurePipelineDependencies -GitHubOrganisation FooOrganisation -RepositoryPrefix foo-
             Assert-MockCalled -CommandName Get-GitHubRepo -ModuleName GitHubToolKit -Times 1 -Exactly
-            Assert-MockCalled -CommandName Get-GitHubRepoFileContent -ModuleName GitHubToolKit -Times 2 -Exactly
+            Assert-MockCalled -CommandName Get-GitHubRepoFileContent -ModuleName GitHubToolKit -Times 1 -Exactly
             Assert-MockCalled -CommandName Get-GitHubRepoRelease -ModuleName GitHubToolKit -Times 2 -Exactly
             Assert-MockCalled -CommandName Get-GithubRepoBranchRef -ModuleName GitHubToolKit -Times 1 -Exactly
             Assert-MockCalled -CommandName New-GitHubRepoBranch -ModuleName GitHubToolKit -Times 1 -Exactly
