@@ -16,5 +16,9 @@ indent_size = 2
 [*.{ps1,psm1,psd1}]
 indent_size = 4
 
+# Setting indent_size to inset so valid YAML can be used in Mock of Get-GitHubRepoFileContent
+[/tests/UT.Update-AzurePipelineDependencies.Tests.ps1]
+indent_size = unset
+
 [*.{cs}]
 indent_size = 4
