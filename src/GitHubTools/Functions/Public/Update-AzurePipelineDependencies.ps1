@@ -96,7 +96,7 @@ function Update-AzurePipelineDependencies {
                 }
                 $DefaultBranchRef = Get-GitHubRepoBranchRef -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -BranchName $Repo.defaultBranchRef.name
                 New-GitHubRepoBranch -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -BaseRefSha $DefaultBranchRef.object.sha -NewBranchName $NewBranchName
-    
+
                 $FileContentParams = @{
                     GitHubOrganisation = $GitHubOrganisation
                     RepositoryName     = $Repo.Name
@@ -107,7 +107,7 @@ function Update-AzurePipelineDependencies {
                     BaseRefSha         = $PipelineYml.Sha
                 }
                 Set-GitHubRepoFileContent @FileContentParams
-    
+
                 $PullRequestParams = @{
                     GitHubOrganisation = $GitHubOrganisation
                     RepositoryName     = $Repo.Name

@@ -47,6 +47,5 @@ function New-GitHubRepoBranch {
         sha = $BaseRefSha
     }
 
-    
     $null = Invoke-GitHubRestMethod -Method POST -Uri "/repos/$GitHubOrganisation/$RepositoryName/git/refs" -Body ($CreateBranchParams | ConvertTo-Json)
 }
