@@ -17,10 +17,12 @@ The repository of the GitHub organisation
 .PARAMETER BranchName
 The name of the branch being deleted
 
+.PARAMETER DryRun
+Writes an output of the changes that would be made with no actual execution. No api calls are performed in this process.
 
 .EXAMPLE
 Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
-Remove-GitHubRepoBranch -GitHubOrganisation MyOrganisation -RepositoryName MyRepository -BranchName MyBranchToBeDeleted
+Remove-GitHubRepoBranch -GitHubOrganisation MyOrganisation -RepositoryName MyRepository -BranchName MyBranchToBeDeleted -DryRun:$false
 
 .NOTES
 The documentation for the GitHub endpoint used by this function can be found here:
