@@ -87,13 +87,18 @@ function Update-AzurePipelineDependencies {
 
             $PullRequests = Get-GitHubRepoPullRequest -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name
             $PipelineDependenciesPullRequests = $PullRequests | Where-Object { $_.head.ref -like "pipeline-dependencies/*" }
-            if ($NewBranchName -notin $PipelineDependenciesPullRequests.head.ref -or !$PipelineDependenciesPullRequests) {
-                if ($PipelineDependenciesPullRequests) {
-                    foreach ($PipelineDependenciesPullRequest in $PipelineDependenciesPullRequests) {
-                        Write-Warning "Deleting out-dated pull request $($PipelineDependenciesPullRequest.number) for branch $($PipelineDependenciesPullRequest.head.ref)"
-                        Remove-GitHubRepoBranch -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -BranchName $PipelineDependenciesPullRequest.head.ref
-                    }
-                }
+
+            $ExistingUpToDatePipelineDependenciesPullRequest = $PipelineDependenciesPullRequests | Where-Object { $_.head.ref -eq $NewBranchName }
+            if ($ExistingUpToDatePipelineDependenciesPullRequest) {
+                $PullRequestUrls += $ExistingUpToDatePipelineDependenciesPullRequest.html_url
+            }
+            $OutdatedPipelineDependenciesPullRequests = $PipelineDependenciesPullRequests | Where-Object { $_.head.ref -ne $NewBranchName }
+            foreach ($OutdatedPipelineDependenciesPullRequest in $OutdatedPipelineDependenciesPullRequests) {
+                Write-Warning "Deleting branch $($OutdatedPipelineDependenciesPullRequest.head.ref) and closing its out-dated pull request no. $($OutdatedPipelineDependenciesPullRequest.number) "
+                Remove-GitHubRepoBranch -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -BranchName $OutdatedPipelineDependenciesPullRequest.head.ref -DryRun:$false
+            }
+
+            if ($NewBranchName -notin $PipelineDependenciesPullRequests.head.ref -or !$PipelineDependenciesPullRequests) {     
                 $DefaultBranchRef = Get-GitHubRepoBranchRef -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -BranchName $Repo.defaultBranchRef.name
                 New-GitHubRepoBranch -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -BaseRefSha $DefaultBranchRef.object.sha -NewBranchName $NewBranchName
 
@@ -118,11 +123,6 @@ function Update-AzurePipelineDependencies {
                 $PullRequest = New-GitHubRepoPullRequest @PullRequestParams
                 Write-Warning "Created PR $($PullRequest.html_url)"
                 $PullRequestUrls += $PullRequest.html_url
-            }
-            else {
-                foreach ($PipelineDependenciesPullRequest in $PipelineDependenciesPullRequests) {
-                    $PullRequestUrls += $PipelineDependenciesPullRequest.html_url
-                }
             }
         }
     }

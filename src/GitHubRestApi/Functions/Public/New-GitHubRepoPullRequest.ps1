@@ -12,16 +12,18 @@ The GitHub organisation
 .PARAMETER RepositoryName
 The repository of the GitHub organisation
 
-.PARAMETER BaseRefSha
-The commit SHA-1 hash that the new branch is based from
+.PARAMETER OriginBranchName
+The name of the branch that is to be merged into the tagert branch
 
-.PARAMETER NewBranchName
-The name of the new branch being created
+.PARAMETER TargetBranchName
+The name of the branch that is being merged into, typically main or master
 
+.PARAMETER Title
+The title of the pull request that will be created
 
 .EXAMPLE
 Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
-New-GitHubRepoBranch -GitHubOrganisation MyOrganisation -RepositoryName MyRepository -BaseRefSha bf493c4131ac993627ca902aa5b88953690ee833 -NewBranchName MyNewBranch
+New-GitHubRepoBranch -GitHubOrganisation MyOrganisation -RepositoryName MyRepository -OriginBranchName new-feature-x -TargetBranchName main -Title "Add new feature x"
 
 .NOTES
 The documentation for the GitHub endpoint used by this function can be found here:

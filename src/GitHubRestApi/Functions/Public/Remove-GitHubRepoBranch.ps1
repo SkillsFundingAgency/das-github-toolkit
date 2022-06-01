@@ -28,15 +28,27 @@ https://docs.github.com/en/rest/git/refs#delete-a-reference
 
 #>
 function Remove-GitHubRepoBranch {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory = $true)]
         [String]$GitHubOrganisation,
         [Parameter(Mandatory = $true)]
         [String]$RepositoryName,
         [Parameter(Mandatory = $true)]
-        [String]$BranchName
+        [String]$BranchName,
+        [Parameter(Mandatory = $false)]
+        [bool]$DryRun = $true
     )
 
-    $null = Invoke-GitHubRestMethod -Method DELETE -Uri "/repos/$GitHubOrganisation/$RepositoryName/git/refs/heads/$BranchName"
+    $RequestUrl = "/repos/$GitHubOrganisation/$RepositoryName/git/refs/heads/$BranchName"
+
+    if ($DryRun) {
+        Write-Warning "DryRun: Would be running DELETE $RequestUrl"
+    }
+    else {
+        Write-Host "Deleting branch $BranchName from $GitHubOrganisation/$RepositoryName"
+        if ($PSCmdlet.ShouldProcess("$GitHubOrganisation/$RepositoryName/$BranchName")) {
+            $null = Invoke-GitHubRestMethod -Method DELETE -Uri $RequestUrl
+        }
+    }
 }
