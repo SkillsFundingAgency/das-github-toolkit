@@ -51,7 +51,7 @@ function Update-AzurePipelineDependencies {
 
         $UpdatePipelineYml = $false
         $PipelineRepos = $Pipeline.resources.repositories`
-        | Where-Object { ($_.type -eq "github")
+        | Where-Object { ($_.type -eq "github") }
         | Where-Object { ($_.name -eq "SkillsFundingAgency/das-platform-building-blocks" -or $_.name -eq "SkillsFundingAgency/das-platform-automation") }
         $NewBranchName = "pipeline-dependencies/"
         $PullRequestTitle = "Updating pipeline dependencies: "
@@ -126,6 +126,6 @@ function Update-AzurePipelineDependencies {
             }
         }
     }
-    Write-Warning "\nPull requests:"
+    Write-Warning "Pull requests:"
     $PullRequestUrls
 }
