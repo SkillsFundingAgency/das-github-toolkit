@@ -108,7 +108,7 @@ function Update-AzurePipelineDependencies {
                     BranchName         = $NewBranchName
                     FilePath           = "azure-pipelines.yml"
                     FileContent        = $PipelineYml.Content
-                    CommitMessage      = "Updating pipeline dependencies"
+                    CommitMessage      = $PullRequestTitle
                     BaseRefSha         = $PipelineYml.Sha
                 }
                 $null = Set-GitHubRepoFileContent @FileContentParams
