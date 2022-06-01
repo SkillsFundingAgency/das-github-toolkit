@@ -98,7 +98,7 @@ function Update-AzurePipelineDependencies {
                 Remove-GitHubRepoBranch -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -BranchName $OutdatedPipelineDependenciesPullRequest.head.ref -DryRun:$false
             }
 
-            if ($NewBranchName -notin $PipelineDependenciesPullRequests.head.ref -or !$PipelineDependenciesPullRequests) {     
+            if ($NewBranchName -notin $PipelineDependenciesPullRequests.head.ref -or !$PipelineDependenciesPullRequests) {
                 $DefaultBranchRef = Get-GitHubRepoBranchRef -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -BranchName $Repo.defaultBranchRef.name
                 New-GitHubRepoBranch -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -BaseRefSha $DefaultBranchRef.object.sha -NewBranchName $NewBranchName
 
