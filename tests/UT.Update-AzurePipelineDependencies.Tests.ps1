@@ -24,12 +24,12 @@ resources:
   - repository: self
   - repository: das-platform-building-blocks
     type: github
-    name: FooOrg/FooRepository
+    name: SkillsFundingAgency/das-platform-building-blocks
     ref: refs/tags/0.4.34
     endpoint: FooServiceConnection
   - repository: das-platform-automation
     type: github
-    name: FooOrg/BarRepository
+    name: SkillsFundingAgency/das-platform-automation
     ref: refs/tags/4.5.14
     endpoint: FooServiceConnection
 '@
@@ -47,6 +47,23 @@ resources:
         )
     }
 
+    Mock Get-GitHubRepoPullRequest -ModuleName GitHubToolKit -MockWIth {
+        @(
+            @{
+                head = @{
+                    ref = "pipeline-dependencies/example-out-dated-branch"
+                }
+            }
+            @{
+                head = @{
+                    ref = "unrelated-branch"
+                }
+            }
+        )
+    }
+
+    Mock Remove-GitHubRepoBranch -ModuleName GitHubToolKit -MockWith {}
+
     Mock Get-GithubRepoBranchRef -ModuleName GitHubToolKit -MockWith {
         @{
             object = @{
@@ -55,10 +72,16 @@ resources:
         }
     }
 
-    Mock New-GitHubRepoBranch -ModuleName GitHubToolKit -MockWith {
-    }
+    Mock New-GitHubRepoBranch -ModuleName GitHubToolKit -MockWith {}
 
-    Mock Set-GitHubRepoFileContent -ModuleName GitHubToolKit -MockWith {
+    Mock Set-GitHubRepoFileContent -ModuleName GitHubToolKit -MockWith {}
+
+    Mock New-GitHubRepoPullRequest -ModuleName GitHubToolKit -MockWIth {
+        @(
+            @{
+                html = "https://MyGitHubOrg/MyRepo/pull/10"
+            }
+        )
     }
 
     Context "All parameters are passed in" {
@@ -68,9 +91,12 @@ resources:
             Assert-MockCalled -CommandName Get-GitHubRepo -ModuleName GitHubToolKit -Times 1 -Exactly
             Assert-MockCalled -CommandName Get-GitHubRepoFileContent -ModuleName GitHubToolKit -Times 1 -Exactly
             Assert-MockCalled -CommandName Get-GitHubRepoRelease -ModuleName GitHubToolKit -Times 2 -Exactly
+            Assert-MockCalled -CommandName Get-GitHubRepoPullRequest -ModuleName GitHubToolKit -Times 1 -Exactly
+            Assert-MockCalled -CommandName Remove-GitHubRepoBranch -ModuleName GitHubToolKit -Times 1 -Exactly
             Assert-MockCalled -CommandName Get-GithubRepoBranchRef -ModuleName GitHubToolKit -Times 1 -Exactly
             Assert-MockCalled -CommandName New-GitHubRepoBranch -ModuleName GitHubToolKit -Times 1 -Exactly
             Assert-MockCalled -CommandName Set-GitHubRepoFileContent -ModuleName GitHubToolKit -Times 1 -Exactly
+            Assert-MockCalled -CommandName New-GitHubRepoPullRequest -ModuleName GitHubToolKit -Times 1 -Exactly
         }
     }
 }

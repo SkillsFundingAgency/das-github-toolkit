@@ -36,7 +36,7 @@ function Get-GitHubRepoBranchRef
         [String]$BranchName
     )
 
-    $BranchRef = Invoke-GitHubRestMethod -Method GET -Uri "/repos/$GitHubOrganisation/$RepositoryName/git/ref/heads/$BranchName"
+    $BranchRef = Invoke-GitHubRestMethod -Method GET -Uri "/repos/$GitHubOrganisation/$RepositoryName/git/refs/heads/$BranchName"
 
     return $BranchRef
 }

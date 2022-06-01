@@ -1,10 +1,10 @@
 <#
 
 .SYNOPSIS
-Creates a new branch on a specified repository from a specified commit SHA-1 hash
+Creates a new pull request on a specified repository with a specified origin and target branch
 
 .DESCRIPTION
-Creates a new branch on a specified repository from a specified commit SHA-1 hash
+Creates a new pull request on a specified repository with a specified origin and target branch
 
 .PARAMETER GitHubOrganisation
 The GitHub organisation
@@ -28,25 +28,17 @@ The documentation for the GitHub endpoint used by this function can be found her
 https://docs.github.com/en/rest/git/refs#create-a-reference
 
 #>
-function New-GitHubRepoBranch {
+function Get-GitHubRepoPullRequest {
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "")]
     param(
         [Parameter(Mandatory = $true)]
         [String]$GitHubOrganisation,
         [Parameter(Mandatory = $true)]
-        [String]$RepositoryName,
-        [Parameter(Mandatory = $true)]
-        [String]$BaseRefSha,
-        [Parameter(Mandatory = $true)]
-        [String]$NewBranchName
+        [String]$RepositoryName
     )
 
-    $CreateBranchParams = @{
-        ref = "refs/heads/$NewBranchName"
-        sha = $BaseRefSha
-    }
+    $PullRequests = Invoke-GitHubRestMethod -Method GET -Uri "/repos/$GitHubOrganisation/$RepositoryName/pulls"
 
-    
-    $null = Invoke-GitHubRestMethod -Method POST -Uri "/repos/$GitHubOrganisation/$RepositoryName/git/refs" -Body ($CreateBranchParams | ConvertTo-Json)
+    return $PullRequests
 }

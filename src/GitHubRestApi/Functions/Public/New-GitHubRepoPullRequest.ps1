@@ -1,10 +1,10 @@
 <#
 
 .SYNOPSIS
-Creates a new branch on a specified repository from a specified commit SHA-1 hash
+Creates a new pull request on a specified repository with a specified origin and target branch
 
 .DESCRIPTION
-Creates a new branch on a specified repository from a specified commit SHA-1 hash
+Creates a new pull request on a specified repository with a specified origin and target branch
 
 .PARAMETER GitHubOrganisation
 The GitHub organisation
@@ -25,10 +25,10 @@ New-GitHubRepoBranch -GitHubOrganisation MyOrganisation -RepositoryName MyReposi
 
 .NOTES
 The documentation for the GitHub endpoint used by this function can be found here:
-https://docs.github.com/en/rest/git/refs#create-a-reference
+https://docs.github.com/en/rest/pulls/pulls#create-a-pull-request
 
 #>
-function New-GitHubRepoBranch {
+function New-GitHubRepoPullRequest {
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "")]
     param(
@@ -37,16 +37,19 @@ function New-GitHubRepoBranch {
         [Parameter(Mandatory = $true)]
         [String]$RepositoryName,
         [Parameter(Mandatory = $true)]
-        [String]$BaseRefSha,
+        [String]$OriginBranchName,
         [Parameter(Mandatory = $true)]
-        [String]$NewBranchName
+        [String]$TargetBranchName,
+        [Parameter(Mandatory = $true)]
+        [String]$Title
     )
 
-    $CreateBranchParams = @{
-        ref = "refs/heads/$NewBranchName"
-        sha = $BaseRefSha
+    $CreatePullRequestParams = @{
+        title = $Title
+        head = $OriginBranchName
+        base = $TargetBranchName
     }
+    $PullRequest = Invoke-GitHubRestMethod -Method POST -Uri "/repos/$GitHubOrganisation/$RepositoryName/pulls" -Body ($CreatePullRequestParams | ConvertTo-Json)
 
-    
-    $null = Invoke-GitHubRestMethod -Method POST -Uri "/repos/$GitHubOrganisation/$RepositoryName/git/refs" -Body ($CreateBranchParams | ConvertTo-Json)
+    return $PullRequest
 }
