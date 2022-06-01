@@ -64,7 +64,7 @@ function Set-GitHubRepoFileContent {
         sha     = $BaseRefSha
         branch  = $BranchName
     }
-    $null = Invoke-GitHubRestMethod -Method PUT -Uri "/repos/$GitHubOrganisation/$RepositoryName/contents/$FilePath" `
+    Invoke-GitHubRestMethod -Method PUT -Uri "/repos/$GitHubOrganisation/$RepositoryName/contents/$FilePath" `
         -Body ($PutContents | ConvertTo-Json)
 
 }

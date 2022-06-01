@@ -51,8 +51,8 @@ function Update-AzurePipelineDependencies {
 
         $UpdatePipelineYml = $false
         $PipelineRepos = $Pipeline.resources.repositories`
-        | Where-Object { ($_.type -eq "github")`
-                -and ($_.name -eq "SkillsFundingAgency/das-platform-building-blocks" -or $_.name -eq "SkillsFundingAgency/das-platform-automation") }
+        | Where-Object { ($_.type -eq "github")
+        | Where-Object { ($_.name -eq "SkillsFundingAgency/das-platform-building-blocks" -or $_.name -eq "SkillsFundingAgency/das-platform-automation") }
         $NewBranchName = "pipeline-dependencies/"
         $PullRequestTitle = "Updating pipeline dependencies: "
         foreach ($PipelineRepo in $PipelineRepos) {
@@ -95,12 +95,12 @@ function Update-AzurePipelineDependencies {
             $OutdatedPipelineDependenciesPullRequests = $PipelineDependenciesPullRequests | Where-Object { $_.head.ref -ne $NewBranchName }
             foreach ($OutdatedPipelineDependenciesPullRequest in $OutdatedPipelineDependenciesPullRequests) {
                 Write-Warning "Deleting branch $($OutdatedPipelineDependenciesPullRequest.head.ref) and closing its out-dated pull request no. $($OutdatedPipelineDependenciesPullRequest.number) "
-                Remove-GitHubRepoBranch -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -BranchName $OutdatedPipelineDependenciesPullRequest.head.ref -DryRun:$false
+                $null = Remove-GitHubRepoBranch -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -BranchName $OutdatedPipelineDependenciesPullRequest.head.ref -DryRun:$false
             }
 
             if ($NewBranchName -notin $PipelineDependenciesPullRequests.head.ref -or !$PipelineDependenciesPullRequests) {
                 $DefaultBranchRef = Get-GitHubRepoBranchRef -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -BranchName $Repo.defaultBranchRef.name
-                New-GitHubRepoBranch -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -BaseRefSha $DefaultBranchRef.object.sha -NewBranchName $NewBranchName
+                $null  = New-GitHubRepoBranch -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -BaseRefSha $DefaultBranchRef.object.sha -NewBranchName $NewBranchName
 
                 $FileContentParams = @{
                     GitHubOrganisation = $GitHubOrganisation
@@ -111,7 +111,7 @@ function Update-AzurePipelineDependencies {
                     CommitMessage      = "Updating pipeline dependencies"
                     BaseRefSha         = $PipelineYml.Sha
                 }
-                Set-GitHubRepoFileContent @FileContentParams
+                $null = Set-GitHubRepoFileContent @FileContentParams
 
                 $PullRequestParams = @{
                     GitHubOrganisation = $GitHubOrganisation
@@ -126,7 +126,6 @@ function Update-AzurePipelineDependencies {
             }
         }
     }
-    Write-Host ""
-    Write-Warning "Pull requests:"
+    Write-Warning "\nPull requests:"
     $PullRequestUrls
 }

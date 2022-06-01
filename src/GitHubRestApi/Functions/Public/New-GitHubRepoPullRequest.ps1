@@ -23,7 +23,7 @@ The title of the pull request that will be created
 
 .EXAMPLE
 Set-GitHubSessionInformation -PatToken <not-a-real-pat-token>
-New-GitHubRepoBranch -GitHubOrganisation MyOrganisation -RepositoryName MyRepository -OriginBranchName new-feature-x -TargetBranchName main -Title "Add new feature x"
+New-GitHubPullRequest -GitHubOrganisation MyOrganisation -RepositoryName MyRepository -OriginBranchName new-feature-x -TargetBranchName main -Title "Add new feature x"
 
 .NOTES
 The documentation for the GitHub endpoint used by this function can be found here:

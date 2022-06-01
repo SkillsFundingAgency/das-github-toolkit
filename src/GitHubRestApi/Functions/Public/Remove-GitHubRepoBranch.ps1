@@ -50,7 +50,7 @@ function Remove-GitHubRepoBranch {
     else {
         Write-Host "Deleting branch $BranchName from $GitHubOrganisation/$RepositoryName"
         if ($PSCmdlet.ShouldProcess("$GitHubOrganisation/$RepositoryName/$BranchName")) {
-            $null = Invoke-GitHubRestMethod -Method DELETE -Uri $RequestUrl
+            Invoke-GitHubRestMethod -Method DELETE -Uri $RequestUrl
         }
     }
 }
