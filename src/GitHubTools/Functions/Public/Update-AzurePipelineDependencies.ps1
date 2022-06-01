@@ -23,7 +23,7 @@ The powershell-yaml module and the .NET library the module wraps around is no lo
 #>
 function Update-AzurePipelineDependencies {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSReviewUnusedParameter", "RepositoryPrefix", Justification = "False positive as rule does not know that Where-Object operates within the same scope")]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "", Justification = "Script creates a GitHub branch which is a non-destructive change.")]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "", Justification = "Script creates and maintains GitHub Pull Requests to update dependencies of pipeline files and is limited to this scope with specific branch name prefixes")]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "")]
     param(
         [Parameter(Mandatory = $false)]
