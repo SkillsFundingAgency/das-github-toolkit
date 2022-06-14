@@ -87,7 +87,7 @@ function Update-AzurePipelineDependencies {
         $DependencyCheckLineInCodeBuildWithSpace = "\n$($DependencyCheckLineInCodeBuild)\r\n"
 
         if ($PipelineYml.Content -match $DependencyCheckLineInAzurePipelinesWithSpace) {
-            $PipelineYml.Content = $PipelineYml.Content -replace ($DependencyCheckLineInAzurePipelinesWithSpace, "")
+            $PipelineYml.Content = $PipelineYml.Content -replace $DependencyCheckLineInAzurePipelinesWithSpace, "`n"
         }
 
         $CodeBuildYml = Get-GitHubRepoFileContent -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -FilePath "pipeline-templates/job/code-build.yml"
@@ -95,7 +95,7 @@ function Update-AzurePipelineDependencies {
         $UpdateCodeBuildYml = $false
         if ($CodeBuildYml) {
             if ($CodeBuildYml.Content -match $DependencyCheckLineInCodeBuildWithSpace) {
-                $CodeBuildYml.Content = $CodeBuildYml.Content -replace $DependencyCheckLineInCodeBuildWithSpace, ""
+                $CodeBuildYml.Content = $CodeBuildYml.Content -replace $DependencyCheckLineInCodeBuildWithSpace, "`n"
                 $UpdateCodeBuildYml = $true
             }   
         }
