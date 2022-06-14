@@ -80,6 +80,26 @@ function Update-AzurePipelineDependencies {
             }
         }
 
+        $DependencyCheckLineInAzurePipelines = "      - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks"
+        $DependencyCheckLineInAzurePipelinesWithSpace = "\n$($DependencyCheckLineInAzurePipelines)\r\n"
+
+        $DependencyCheckLineInCodeBuild = "  - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks"
+        $DependencyCheckLineInCodeBuildWithSpace = "\n$($DependencyCheckLineInCodeBuild)\r\n"
+
+        if ($PipelineYml.Content -match $DependencyCheckLineInAzurePipelinesWithSpace) {
+            $PipelineYml.Content = $PipelineYml.Content -replace ($DependencyCheckLineInAzurePipelinesWithSpace, "")
+        }
+
+        $CodeBuildYml = Get-GitHubRepoFileContent -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -FilePath "pipeline-templates/job/code-build.yml"
+
+        $UpdateCodeBuildYml = $false
+        if ($CodeBuildYml) {
+            if ($CodeBuildYml.Content -match $DependencyCheckLineInCodeBuildWithSpace) {
+                $CodeBuildYml.Content = $CodeBuildYml.Content -replace $DependencyCheckLineInCodeBuildWithSpace, ""
+                $UpdateCodeBuildYml = $true
+            }   
+        }
+
         $NewBranchName = $NewBranchName.TrimEnd('-')
         $PullRequestTitle = $PullRequestTitle.TrimEnd(' and ')
 
@@ -100,7 +120,7 @@ function Update-AzurePipelineDependencies {
 
             if ($NewBranchName -notin $PipelineDependenciesPullRequests.head.ref -or !$PipelineDependenciesPullRequests) {
                 $DefaultBranchRef = Get-GitHubRepoBranchRef -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -BranchName $Repo.defaultBranchRef.name
-                $null  = New-GitHubRepoBranch -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -BaseRefSha $DefaultBranchRef.object.sha -NewBranchName $NewBranchName
+                $null = New-GitHubRepoBranch -GitHubOrganisation $GitHubOrganisation -RepositoryName $Repo.name -BaseRefSha $DefaultBranchRef.object.sha -NewBranchName $NewBranchName
 
                 $FileContentParams = @{
                     GitHubOrganisation = $GitHubOrganisation
@@ -113,6 +133,20 @@ function Update-AzurePipelineDependencies {
                 }
                 $null = Set-GitHubRepoFileContent @FileContentParams
 
+                if ($UpdateCodeBuildYml) {
+                    $FileContentParams = @{
+                        GitHubOrganisation = $GitHubOrganisation
+                        RepositoryName     = $Repo.Name
+                        BranchName         = $NewBranchName
+                        FilePath           = "pipeline-templates/job/code-build.yml"
+                        FileContent        = $CodeBuildYml.Content
+                        CommitMessage      = "Removing dependency-check template task"
+                        BaseRefSha         = $CodeBuildYml.Sha
+                    }
+                    $null = Set-GitHubRepoFileContent @FileContentParams
+                }
+
+                <#
                 $PullRequestParams = @{
                     GitHubOrganisation = $GitHubOrganisation
                     RepositoryName     = $Repo.Name
@@ -123,6 +157,7 @@ function Update-AzurePipelineDependencies {
                 $PullRequest = New-GitHubRepoPullRequest @PullRequestParams
                 Write-Warning "Created PR $($PullRequest.html_url)"
                 $PullRequestUrls += $PullRequest.html_url
+                #>
             }
         }
     }
