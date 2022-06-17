@@ -197,6 +197,13 @@ Describe "Get-GitHubAudit tests" -Tags @("Unit") {
     }
 
     Context "GitHub API returns valid responses to all API calls and storage account details are supplied" {
+
+        #Declare cmdlets as functions so Az PowerShell module is not needed for running unit tests
+        function New-AzStorageContext {}
+        function Get-AzStorageContainer {}
+        function New-AzStorageContainer {}
+        function Set-AzStorageBlobContent {}
+
         Mock New-AzStorageContext -ModuleName GitHubToolKit
         Mock Get-AzStorageContainer -MockWith {
             return New-Object -TypeName PSCustomObject
