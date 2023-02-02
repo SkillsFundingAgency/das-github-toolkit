@@ -79,7 +79,7 @@ function Search-RegexPackage {
             $Pattern = "<PackageReference\sInclude=`"($PackageName.*)`"\sVersion=`"(.*)`"\s/>"
             $null = $FileContent -match $Pattern
             #The below code only returns the first match, if different parts of the package are referenced those are not returned
-            if ($Matches) {              
+            if ($Matches) {
                 $SearchResult = New-Object -TypeName GitHubRegexSearch -Property @{
                     Repository     = $Files[$i].repository.name
                     Package        = $Matches[1]
