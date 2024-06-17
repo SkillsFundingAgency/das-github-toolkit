@@ -118,6 +118,11 @@ function Invoke-GitHubRestMethod {
         $Headers = $SessionInfo.Headers
     }
 
+    # Ensure Content-Type is present if Body is provided
+    if ($PSBoundParameters.ContainsKey("Body") -and !$Headers.ContainsKey("Content-Type")) {
+        $Headers["Content-Type"] = "application/json"
+    }
+
     $Params = @{
         Method = $Method
         Headers = $Headers
