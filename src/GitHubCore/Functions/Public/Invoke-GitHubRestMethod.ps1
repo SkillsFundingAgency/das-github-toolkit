@@ -1,5 +1,5 @@
 function Invoke-GitHubRestMethod {
-<#
+    <#
     .SYNOPSIS
     A module specific wrapper for Invoke-ResetMethod
 
@@ -7,7 +7,7 @@ function Invoke-GitHubRestMethod {
     A module specific wrapper for Invoke-ResetMethod
 
     .PARAMETER Method
-    METHOD: GET, POST, PUT, DELETE
+    METHOD: GET, POST, PUT, DELETE, PATCH
 
     .PARAMETER URI
     Service URI
@@ -39,11 +39,9 @@ function Invoke-GitHubRestMethod {
     .EXAMPLE
     Invoke-GitHubRestMethod -Method POST -URI /api/release/1
 
-#>
-[CmdletBinding(DefaultParameterSetName="Standard")][OutputType('System.Management.Automation.PSObject')]
-
+    #>
+    [CmdletBinding(DefaultParameterSetName="Standard")][OutputType('System.Management.Automation.PSObject')]
     Param (
-
         [Parameter(Mandatory=$true, Position=0)]
         [ValidateSet("HEAD","GET","POST","PUT","DELETE", "PATCH")]
         [String]$Method,
@@ -99,27 +97,25 @@ function Invoke-GitHubRestMethod {
     # --- Build full URI
     $BaseURI = "https://api.github.com"
     $FullURI = "$($BaseUri)$($URI)"
+    Write-Verbose "Full URI: $FullURI"
 
     # --- Grab the sessionstate variable & test throw if it is null
     $SessionInfo = Get-GitHubSessionInformation -Verbose:$VerbosePreference
+    if (!$SessionInfo) {
+        Write-Error "Session information is null or empty."
+        return
+    }
 
-    # --- If the headers parameter is not passed use the deafult
+    # --- If the headers parameter is not passed use the default
     if ($PSBoundParameters.ContainsKey("Headers")) {
-
         foreach ($SessionHeaderKey in $SessionInfo.Headers.Keys) {
-
             if (!$Headers[$SessionHeaderKey]) {
-
                 $Headers[$SessionHeaderKey] = $SessionInfo.Headers[$SessionHeaderKey]
-
             }
         }
-
     }
     else {
-
         $Headers = $SessionInfo.Headers
-
     }
 
     $Params = @{
@@ -131,36 +127,33 @@ function Invoke-GitHubRestMethod {
     }
 
     if ($PSBoundParameters.ContainsKey("Body")) {
-
         $Params.Add("Body", $Body)
-
     }
 
     if ($PSBoundParameters.ContainsKey("OutFile")) {
-
         $Params.Add("OutFile", $OutFile)
-
     }
 
     if ($PSBoundParameters.ContainsKey("InFile")) {
-
         $UploadURI = "https://uploads.github.com"
         $Params.Uri = "$($UploadURI)$($URI)"
         $Params.Add("InFile", $InFile)
         $Params.Add("ContentType", $ContentType)
-
     }
+
+    Write-Verbose "Parameters: $Params"
 
     try {
         $Response = Invoke-RestMethod @Params -ResponseHeadersVariable ResponseHeaders -Verbose:$VerbosePreference
     }
     catch {
+        Write-Error "Error in Invoke-RestMethod: $_"
         $Response = $_.ErrorDetails.Message
     }
 
     # check for rate limiting
     if ($ResponseHeaders) {
-        $WaitParams =@{
+        $WaitParams = @{
             Api = $ResponseHeaders["X-RateLimit-Resource"][0]
             Limit = ([int]$ResponseHeaders["X-RateLimit-Limit"][0])
             Remaining = ([int]$ResponseHeaders["X-RateLimit-Remaining"][0])
@@ -175,19 +168,12 @@ function Invoke-GitHubRestMethod {
 
     # check for pagination
     if ($null -ne $ResponseHeaders.Link) {
-
         Write-Verbose "Response contains multiple pages"
-        #use regex to retrieve the page properties from the Link response header
-        $PageNumbers = Select-String "page=(\d*)" -InputObject $ResponseHeaders.Link -AllMatches | ForEach-Object  {$_.matches}
-        #get the value of the last page
+        $PageNumbers = Select-String "page=(\d*)" -InputObject $ResponseHeaders.Link -AllMatches | ForEach-Object {$_.matches}
         $LastPage = $PageNumbers[-1].Groups[1].Value
         for ($i = 2; $i -le $LastPage; $i++) {
-
-            #pause to ensure rate limit not hit
             Start-Sleep -Seconds 2
-            #replace the page parameter value with $i
             $PageLink = $ResponseHeaders.Link.Split(";")[0] -replace "(page=)(\d*)","page=$i"
-            #strip out the angle brackets from the url
             $PageLink = $PageLink.Replace("<","").Replace(">","")
             $Params["Uri"] = $PageLink
             try {
@@ -211,17 +197,16 @@ function Invoke-GitHubRestMethod {
                 else {
                     Write-Error "$CollectionName is not a collection"
                 }
-
             }
             elseif ($PageResponse.items -and $PageResponse.items.GetType().ToString() -eq "System.Object[]") {
                 $Response.items += $PageResponse.items
             }
-            else  {
+            else {
                 Write-Warning "Collection not found in page response"
             }
 
             if ($ResponseHeaders) {
-                $WaitParams =@{
+                $WaitParams = @{
                     Api = $ResponseHeaders["X-RateLimit-Resource"][0]
                     Limit = ([int]$ResponseHeaders["X-RateLimit-Limit"][0])
                     Remaining = ([int]$ResponseHeaders["X-RateLimit-Remaining"][0])
@@ -233,11 +218,8 @@ function Invoke-GitHubRestMethod {
                 Write-Error "No response headers, waiting 60 seconds"
                 Start-Sleep -Seconds 60
             }
-
         }
-
     }
 
     Write-Output $Response
-
 }
