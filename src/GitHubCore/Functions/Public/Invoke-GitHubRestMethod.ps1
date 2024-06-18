@@ -175,11 +175,16 @@ function Invoke-GitHubRestMethod {
     # Check for pagination
     if ($null -ne $ResponseHeaders.Link) {
         Write-Verbose "Response contains multiple pages"
+        #use regex to retrieve the page properties from the Link response header
         $PageNumbers = Select-String "page=(\d*)" -InputObject $ResponseHeaders.Link -AllMatches | ForEach-Object {$_.matches}
+        #get the value of the last page
         $LastPage = $PageNumbers[-1].Groups[1].Value
         for ($i = 2; $i -le $LastPage; $i++) {
+            #pause to ensure rate limit not hit
             Start-Sleep -Seconds 2
+            #replace the page parameter value with $i
             $PageLink = $ResponseHeaders.Link.Split(";")[0] -replace "(page=)(\d*)", "page=$i"
+            #strip out the angle brackets from the url
             $PageLink = $PageLink.Replace("<", "").Replace(">", "")
             $Params["Uri"] = $PageLink
             try {
