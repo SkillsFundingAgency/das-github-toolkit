@@ -1,13 +1,13 @@
 function Invoke-GitHubRestMethod {
-<#
+    <#
     .SYNOPSIS
-    A module specific wrapper for Invoke-ResetMethod
+    A module specific wrapper for Invoke-RestMethod
 
     .DESCRIPTION
-    A module specific wrapper for Invoke-ResetMethod
+    A module specific wrapper for Invoke-RestMethod
 
     .PARAMETER Method
-    METHOD: GET, POST, PUT, DELETE
+    METHOD: GET, POST, PUT, DELETE, PATCH
 
     .PARAMETER URI
     Service URI
@@ -28,7 +28,7 @@ function Invoke-GitHubRestMethod {
     Optional Headers to send. This will override the default set provided
 
     .PARAMETER CollectionName
-    Optional.  The name of the collection returned by the GitHub REST API, by default will look for a collection called "items".
+    Optional. The name of the collection returned by the GitHub REST API, by default will look for a collection called "items".
 
     .INPUTS
     System.String
@@ -38,14 +38,13 @@ function Invoke-GitHubRestMethod {
 
     .EXAMPLE
     Invoke-GitHubRestMethod -Method POST -URI /api/release/1
+    #>
 
-#>
-[CmdletBinding(DefaultParameterSetName="Standard")][OutputType('System.Management.Automation.PSObject')]
-
+    [CmdletBinding(DefaultParameterSetName="Standard")]
+    [OutputType('System.Management.Automation.PSObject')]
     Param (
-
         [Parameter(Mandatory=$true, Position=0)]
-        [ValidateSet("HEAD","GET","POST","PUT","DELETE", "PATCH")]
+        [ValidateSet("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH")]
         [String]$Method,
 
         [Parameter(Mandatory=$true, Position=1)]
@@ -78,7 +77,7 @@ function Invoke-GitHubRestMethod {
     )
 
     function Wait-GitHubRateLimit {
-        param(
+        param (
             [string]$Api,
             [int]$Limit,
             [int]$Remaining,
@@ -96,75 +95,75 @@ function Invoke-GitHubRestMethod {
         }
     }
 
-    # --- Build full URI
+    # Build full URI
     $BaseURI = "https://api.github.com"
-    $FullURI = "$($BaseUri)$($URI)"
+    $FullURI = "$($BaseURI)$($URI)"
+    Write-Verbose "Full URI: $FullURI"
 
-    # --- Grab the sessionstate variable & test throw if it is null
+    # Grab the session state variable & test throw if it is null
     $SessionInfo = Get-GitHubSessionInformation -Verbose:$VerbosePreference
+    if (!$SessionInfo) {
+        Write-Error "Session information is null or empty."
+        return
+    }
 
-    # --- If the headers parameter is not passed use the deafult
+    # If the headers parameter is not passed use the default
     if ($PSBoundParameters.ContainsKey("Headers")) {
-
         foreach ($SessionHeaderKey in $SessionInfo.Headers.Keys) {
-
             if (!$Headers[$SessionHeaderKey]) {
-
                 $Headers[$SessionHeaderKey] = $SessionInfo.Headers[$SessionHeaderKey]
-
             }
         }
-
     }
     else {
-
         $Headers = $SessionInfo.Headers
+    }
 
+    # Ensure Content-Type is present if Body is provided
+    if ($PSBoundParameters.ContainsKey("Body") -and !$Headers.ContainsKey("Content-Type")) {
+        $Headers["Content-Type"] = "application/json"
     }
 
     $Params = @{
-        Method = $Method
-        Headers = $Headers
-        Uri = $FullURI
-        RetryIntervalSec = 15
-        MaximumRetryCount = 3
+        Method             = $Method
+        Headers            = $Headers
+        Uri                = $FullURI
+        RetryIntervalSec   = 15
+        MaximumRetryCount  = 3
     }
 
     if ($PSBoundParameters.ContainsKey("Body")) {
-
         $Params.Add("Body", $Body)
-
     }
 
     if ($PSBoundParameters.ContainsKey("OutFile")) {
-
         $Params.Add("OutFile", $OutFile)
-
     }
 
     if ($PSBoundParameters.ContainsKey("InFile")) {
-
         $UploadURI = "https://uploads.github.com"
         $Params.Uri = "$($UploadURI)$($URI)"
         $Params.Add("InFile", $InFile)
         $Params.Add("ContentType", $ContentType)
-
     }
+
+    Write-Verbose "Parameters: $($Params | Out-String)"
 
     try {
         $Response = Invoke-RestMethod @Params -ResponseHeadersVariable ResponseHeaders -Verbose:$VerbosePreference
     }
     catch {
+        Write-Error "Error in Invoke-RestMethod: $_"
         $Response = $_.ErrorDetails.Message
     }
 
-    # check for rate limiting
+    # Check for rate limiting
     if ($ResponseHeaders) {
-        $WaitParams =@{
-            Api = $ResponseHeaders["X-RateLimit-Resource"][0]
-            Limit = ([int]$ResponseHeaders["X-RateLimit-Limit"][0])
-            Remaining = ([int]$ResponseHeaders["X-RateLimit-Remaining"][0])
-            Reset = ([int]$ResponseHeaders["X-RateLimit-Reset"][0])
+        $WaitParams = @{
+            Api       = $ResponseHeaders["X-RateLimit-Resource"][0]
+            Limit     = [int]$ResponseHeaders["X-RateLimit-Limit"][0]
+            Remaining = [int]$ResponseHeaders["X-RateLimit-Remaining"][0]
+            Reset     = [int]$ResponseHeaders["X-RateLimit-Reset"][0]
         }
         Wait-GitHubRateLimit @WaitParams
     }
@@ -173,22 +172,20 @@ function Invoke-GitHubRestMethod {
         Write-Warning "Response: $Response"
     }
 
-    # check for pagination
+    # Check for pagination
     if ($null -ne $ResponseHeaders.Link) {
-
         Write-Verbose "Response contains multiple pages"
         #use regex to retrieve the page properties from the Link response header
-        $PageNumbers = Select-String "page=(\d*)" -InputObject $ResponseHeaders.Link -AllMatches | ForEach-Object  {$_.matches}
+        $PageNumbers = Select-String "page=(\d*)" -InputObject $ResponseHeaders.Link -AllMatches | ForEach-Object {$_.matches}
         #get the value of the last page
         $LastPage = $PageNumbers[-1].Groups[1].Value
         for ($i = 2; $i -le $LastPage; $i++) {
-
             #pause to ensure rate limit not hit
             Start-Sleep -Seconds 2
             #replace the page parameter value with $i
-            $PageLink = $ResponseHeaders.Link.Split(";")[0] -replace "(page=)(\d*)","page=$i"
+            $PageLink = $ResponseHeaders.Link.Split(";")[0] -replace "(page=)(\d*)", "page=$i"
             #strip out the angle brackets from the url
-            $PageLink = $PageLink.Replace("<","").Replace(">","")
+            $PageLink = $PageLink.Replace("<", "").Replace(">", "")
             $Params["Uri"] = $PageLink
             try {
                 $PageResponse = Invoke-RestMethod @Params
@@ -202,7 +199,7 @@ function Invoke-GitHubRestMethod {
                 $Response += $PageResponse
             }
             elseif ($CollectionName) {
-                if ((($Response | Get-member -Name $CollectionName).Definition -split " ")[0] -eq "Object[]") {
+                if ((($Response | Get-Member -Name $CollectionName).Definition -split " ")[0] -eq "Object[]") {
                     Remove-Variable AppendedCollection -ErrorAction SilentlyContinue
                     $AppendedCollection = $Response | Select-Object -ExpandProperty $CollectionName
                     $AppendedCollection += $PageResponse | Select-Object -ExpandProperty $CollectionName
@@ -211,21 +208,20 @@ function Invoke-GitHubRestMethod {
                 else {
                     Write-Error "$CollectionName is not a collection"
                 }
-
             }
             elseif ($PageResponse.items -and $PageResponse.items.GetType().ToString() -eq "System.Object[]") {
                 $Response.items += $PageResponse.items
             }
-            else  {
+            else {
                 Write-Warning "Collection not found in page response"
             }
 
             if ($ResponseHeaders) {
-                $WaitParams =@{
-                    Api = $ResponseHeaders["X-RateLimit-Resource"][0]
-                    Limit = ([int]$ResponseHeaders["X-RateLimit-Limit"][0])
-                    Remaining = ([int]$ResponseHeaders["X-RateLimit-Remaining"][0])
-                    Reset = ([int]$ResponseHeaders["X-RateLimit-Reset"][0])
+                $WaitParams = @{
+                    Api       = $ResponseHeaders["X-RateLimit-Resource"][0]
+                    Limit     = [int]$ResponseHeaders["X-RateLimit-Limit"][0]
+                    Remaining = [int]$ResponseHeaders["X-RateLimit-Remaining"][0]
+                    Reset     = [int]$ResponseHeaders["X-RateLimit-Reset"][0]
                 }
                 Wait-GitHubRateLimit @WaitParams
             }
@@ -233,11 +229,8 @@ function Invoke-GitHubRestMethod {
                 Write-Error "No response headers, waiting 60 seconds"
                 Start-Sleep -Seconds 60
             }
-
         }
-
     }
 
     Write-Output $Response
-
 }
